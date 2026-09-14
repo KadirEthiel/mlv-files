@@ -1315,7 +1315,7 @@
 
         /* ── MVP S9 ── */
         .zrow.zmvp {
-            grid-template-columns: 60px minmax(0, 1.8fr) minmax(0, .9fr) minmax(0, 1.1fr) minmax(0, .9fr) minmax(0, 1.2fr) 72px !important;
+            grid-template-columns: 60px minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 78px !important;
             min-height: 68px !important
         }
 
@@ -1438,7 +1438,9 @@
             .zrow.zmvp>span:nth-child(3),
             .zrow.zmvp>span:nth-child(4),
             .zrow.zmvp>span:nth-child(5),
-            .zrow.zmvp>span:nth-child(6) {
+            .zrow.zmvp>span:nth-child(6),
+            .zrow.zmvp>span:nth-child(7),
+            .zrow.zmvp>span:nth-child(8) {
                 display: none
             }
         }
@@ -1913,7 +1915,7 @@
     </div>
     <script>
         const ZAPI = "https://script.google.com/macros/s/AKfycbyypYhjFNz4gfzgcKjStiW1CrncZIOwjbUCwnysaSsM1XDc4Zsf7A_4bjB5fWb68Ie3/exec";
-        const ZAPI_SEASONX = ""; // ← pega aquí el link de tu API de Season X cuando lo tengas
+        const ZAPI_SEASONX = "https://script.google.com/macros/s/AKfycbxkyrjsRkQ0tn21PCd6mA4DrEfuLBXbEW_wN65Oj_UR6rj3WnS_iWmtTqSJj2jqiTjP/exec"; // ← pega aquí el link de tu API de Season X cuando lo tengas
         // Separate data stores — never mixed
         let ZHALL = [], ZSEAS = [], ZMVPS9 = [], ZHOF = [], ZLSIG = "", ZTAB = "hall", ZFILT = "all";
         const Z$ = id => document.getElementById(id);
@@ -1958,10 +1960,12 @@
                 name: Zcl(Zkey(r, ["name", "player", "players", "Player", "Players", "PLAYER", "PLAYERS"])),
                 team: Zcl(Zkey(r, ["team", "Team", "TEAM"])),
                 top1: Zcl(Zkey(r, ["top1", "TOP1", "Top 1", "top 1", "TOP 1"])),
-                top5: Zcl(Zkey(r, ["top5", "TOP5", "Top 5", "top 5", "TOP 5", "top+5", "TOP+5"])),
+                top2: Zcl(Zkey(r, ["top2", "TOP2", "Top 2", "top 2", "TOP 2"])),
+                top3: Zcl(Zkey(r, ["top3", "TOP3", "Top 3", "top 3", "TOP 3"])),
+                top4: Zcl(Zkey(r, ["top4", "TOP4", "Top 4", "top 4", "TOP 4"])),
+                top5: Zcl(Zkey(r, ["top5", "TOP5", "Top 5", "top 5", "TOP 5"])),
                 potw: Zcl(Zkey(r, ["potw", "POTW", "Player of the Week", "PLAYER OF THE WEEK"])),
-                mvps: Zcl(Zkey(r, ["mvps", "MVPs", "MVPS", "mvp", "MVP", "awards", "Awards"])),
-                points: Number(Zkey(r, ["points", "Points", "POINTS", "Total", "TOTAL", "Pts", "PTS"]) || 0) || 0
+                points: Number(Zkey(r, ["points", "Points", "POINTS", "Total Points", "TOTAL POINTS", "Total", "TOTAL", "Pts", "PTS"]) || 0) || 0
             };
         }
         // Hall of Fame (Sheet 2) — only Player + Total Points
@@ -1977,7 +1981,7 @@
             return {
                 hall: raw.rankings || raw.hall || raw.hof || raw.players || raw.rows || raw.data || [],
                 seasonal: raw.seasonalRankings || raw.seasonal || [],
-                mvps9: raw.mvpsS9 || raw.mvpS9 || raw.mvps9 || raw.mvp9 || raw["Season 9"] || raw.s9Mvps || raw.s9MVPs || [],
+                mvps9: raw.mvpsSX || raw.seasonX || raw.mvpsS10 || raw.season10 || raw.mvpsS9 || raw.mvpS9 || raw.mvps9 || raw.mvp9 || raw["Season X"] || raw.data || [],
                 hof: raw.hallOfFame || raw.hof_sheet2 || raw.hof2 || []
             };
         }
@@ -2184,7 +2188,7 @@
         // ── Render: MVP Season X ──────────────────────────────────────────────────────
         function ZrenderMvps9() {
             const rows = ZfiltMvps9();
-            const head = `<div class="zrow zmvp zrh"><span>Rank</span><span>Player</span><span>Top 1</span><span>Top +5</span><span>POTW</span><span>MVPs</span><span>Points</span></div>`;
+            const head = `<div class="zrow zmvp zrh"><span>Rank</span><span>Player</span><span>Top 1</span><span>Top 2</span><span>Top 3</span><span>Top 4</span><span>Top 5</span><span>POTW</span><span>Points</span></div>`;
             if (!ZMVPS9.length) { Z$("zmvps9Table").innerHTML = '<div class="zempty">No Season X data found.</div>'; return }
             if (!rows.length) { Z$("zmvps9Table").innerHTML = head + '<div class="zempty">No players match your search.</div>'; return }
             Z$("zmvps9Table").innerHTML = head + rows.map((p, i) => `
@@ -2192,9 +2196,11 @@
         <span class="zrrank">${ZrowHex(i + 1)}</span>
         <span class="zrplayer"><b>${Zesc(p.name)}</b>${p.team ? `<span class="zrteam">${Zesc(p.team)}</span>` : ""}</span>
         <span class="zrcell">${p.top1 ? ZpillsHTML(p.top1) : '<span class="zpill znil">—</span>'}</span>
+        <span class="zrcell">${p.top2 ? ZpillsHTML(p.top2) : '<span class="zpill znil">—</span>'}</span>
+        <span class="zrcell">${p.top3 ? ZpillsHTML(p.top3) : '<span class="zpill znil">—</span>'}</span>
+        <span class="zrcell">${p.top4 ? ZpillsHTML(p.top4) : '<span class="zpill znil">—</span>'}</span>
         <span class="zrcell">${p.top5 ? ZpillsHTML(p.top5) : '<span class="zpill znil">—</span>'}</span>
         <span class="zrcell">${p.potw ? ZpillsHTML(p.potw) : '<span class="zpill znil">—</span>'}</span>
-        <span class="zrcell">${p.mvps ? ZpillsHTML(p.mvps) : '<span class="zpill znil">—</span>'}</span>
         <span class="zrtotal">${p.points}</span>
       </div>`).join("");
         }
