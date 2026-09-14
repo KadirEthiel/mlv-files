@@ -1911,7 +1911,339 @@
         </div>
         <footer class="zfooter">Made by Fuas · MLV Rankings · 2026</footer>
     </div>
-    <script> const ZAPI = "https://script.google.com/macros/s/AKfycbxdtvxDFjOo0fc_NGFfD4APFpMmOStqHpHZNGJC60Kjt_aEGAmcfv8FkSDxG1mLCPL3/exec"; const ZAPI_SEASONX = ""; // ← pega aquí el link de tu API de Season X // Separate data stores — never mixed let ZHALL=[], ZSEAS=[], ZMVPS9=[], ZHOF=[], ZLSIG="", ZTAB="hall", ZFILT="all"; const Z$=id=>document.getElementById(id); const Zcl=v=>String(v??"").trim(); const Zkey=(r,a)=>{for(const n of a)if(r[n]!=null&&Zcl(r[n]))return r[n];return""}; const Zhas=(p,k)=>Zcl(p[k]).length>0; const Zsrch=p=>Object.values(p).join(" ").toLowerCase(); function Zstatus(txt,type){ const el=Z$("zsync");el.innerHTML=""; const dot=document.createElement("div");dot.className="zbdot"; const sp=document.createElement("span");sp.textContent=txt; el.appendChild(dot);el.appendChild(sp); el.className="zbadge"+(type?" z"+type:""); } // ── Normalizers (each only touches its own data) ──────────────────────────── function ZnormHall(r){ return{ name:     Zcl(Zkey(r,["name","player","players","Player","Players","PLAYER","PLAYERS","Jogador","JOGADOR"])), handle:   Zcl(Zkey(r,["handle","user","discord","Handle","@","Discord","User"])), top1:     Zcl(Zkey(r,["top1","TOP1","TOP 1","Top 1","top 1"])), top5:     Zcl(Zkey(r,["top5","TOP5","TOP 5+","Top 5+","top 5+","TOP 5"])), potw:     Zcl(Zkey(r,["potw","POTW","Player of the Week","PLAYER OF THE WEEK"])), series:   Zcl(Zkey(r,["series","Series","Player of the Series","PLAYER OF THE SERIES"])), mvps:     Zcl(Zkey(r,["mvps","MVPs","MVPS","MVP"])), champions:Zcl(Zkey(r,["champions","Champions","CHAMPIONS","Champion"])), points:   Number(Zkey(r,["points","Points","POINTS","Total","TOTAL"])||0)||0 }; } function ZnormSeas(r){ return{ name:  Zcl(Zkey(r,["name","player","players","Player","Players","PLAYER","PLAYERS","Jogador","JOGADOR"])), handle:Zcl(Zkey(r,["handle","user","discord","Handle","@","Discord","User"])), top1:  Zcl(Zkey(r,["top1","TOP1","TOP 1","Top 1","top 1"])), top5:  Zcl(Zkey(r,["top5","TOP5","TOP 5+","Top 5+","top 5+","TOP 5","Top 5"])), points:Number(Zkey(r,["points","Points","POINTS","Total","TOTAL","Pts","PTS"])||0)||0 }; } function ZnormMvpS9(r){ return{ name:  Zcl(Zkey(r,["name","player","players","Player","Players","PLAYER","PLAYERS"])), team:  Zcl(Zkey(r,["team","Team","TEAM"])), top1:  Zcl(Zkey(r,["top1","TOP1","Top 1","top 1","TOP 1"])), top5:  Zcl(Zkey(r,["top5","TOP5","Top 5","top 5","TOP 5","top+5","TOP+5"])), potw:  Zcl(Zkey(r,["potw","POTW","Player of the Week","PLAYER OF THE WEEK"])), mvps:  Zcl(Zkey(r,["mvps","MVPs","MVPS","mvp","MVP","awards","Awards"])), points:Number(Zkey(r,["points","Points","POINTS","Total","TOTAL","Pts","PTS"])||0)||0 }; } // Hall of Fame (Sheet 2) — only Player + Total Points function ZnormHof(r){ return{ name:  Zcl(Zkey(r,["name","player","players","Player","Players","PLAYER","PLAYERS"])), points:Number(Zkey(r,["points","totalPoints","total_points","Total Points","Total","TOTAL","TotalPoints","Pts","PTS"])||0)||0 }; } // ── Payload reader — strictly separates the 3 sources ─────────────────────── function ZreadPayload(raw){ if(Array.isArray(raw)) return{hall:raw, seasonal:[], mvps9:[], hof:[]}; return{ // Source 1: Sheet 1 Table "Rankings" (rows 2-114) hall:     raw.rankings         || raw.hall       || raw.hof    || raw.players || raw.rows  || raw.data || [], // Source 2: Sheet 1 Table "Seasonal" (rows 115+) seasonal: raw.seasonalRankings || raw.seasonal   || [], // Source 3: Season 9 (separate API) mvps9:    raw.mvpsS9           || raw.mvpS9      || raw.mvps9  || raw.mvp9    || raw["Season 9"] || raw.s9Mvps || raw.s9MVPs || [], // Source 4: Sheet 2 "Hall Of Fame" hof:      raw.hallOfFame       || raw.hof_sheet2 || raw.hof2   || [] }; } async function Zsync(){ try{ if(!ZAPI||ZAPI.includes("SEU_LINK")){Zstatus("ADD SHEET LINK","err");return} Zstatus("SYNCING"); // Main sheet (Accolades + Seasonal + HOF from Sheet 2) const mainCtrl=new AbortController(); const mainTimer=setTimeout(()=>mainCtrl.abort(),12000); let mainRes; try{ mainRes=await fetch(ZAPI,{method:"GET",cache:"no-store",signal:mainCtrl.signal}); } finally { clearTimeout(mainTimer) } if(!mainRes.ok) throw new Error("MAIN HTTP "+mainRes.status); let mainRaw; try{mainRaw=JSON.parse(await mainRes.text())}catch{throw new Error("MAIN NOT JSON")} const pl   = ZreadPayload(mainRaw); const hall = (pl.hall    ||[]).map(ZnormHall).filter(p=>p.name); const seas = (pl.seasonal||[]).map(ZnormSeas).filter(p=>p.name); const hof  = (pl.hof     ||[]).map(ZnormHof ).filter(p=>p.name); // Season X — separate endpoint let mvps9=[]; if(ZAPI_SEASONX&&!ZAPI_SEASONX.includes("SEU_LINK")){ try{ const s9Ctrl=new AbortController(); const s9Timer=setTimeout(()=>s9Ctrl.abort(),12000); let s9Res; try{ s9Res=await fetch(ZAPI_SEASONX,{method:"GET",cache:"no-store",signal:s9Ctrl.signal}); } finally { clearTimeout(s9Timer) } if(!s9Res.ok) throw new Error("S9 HTTP "+s9Res.status); const s9Pl=ZreadPayload(JSON.parse(await s9Res.text())); mvps9=(s9Pl.mvps9||[]).map(ZnormMvpS9).filter(p=>p.name); }catch(e){console.error("S9 error:",e)} } const sig=JSON.stringify({hall,seas,mvps9,hof}); if(sig!==ZLSIG){ZHALL=hall;ZSEAS=seas;ZMVPS9=mvps9;ZHOF=hof;ZLSIG=sig;ZrenderAll()} Zstatus("LIVE DATA","live"); }catch(err){ console.error(err); const timedOut = err && err.name==="AbortError"; Zstatus(timedOut?"TIMEOUT":"SHEET ERROR","err"); if(!ZHALL.length&&!ZSEAS.length&&!ZHOF.length){ const msg = timedOut ? "Timed out connecting to Google Sheets. Check that the Apps Script link is correct and deployed with \u0027Anyone\u0027 access." : "Could not load Google Sheet. Check Apps Script permissions."; Z$("zpodium").innerHTML=""; Z$("zhallTable").innerHTML=`<div class="zempty">${msg}</div>`; Z$("zseasTable").innerHTML='<div class="zempty">Could not load seasonal data.</div>'; Z$("zmvps9Table").innerHTML='<div class="zempty">Could not load Season X data.</div>'; Z$("zhofTable").innerHTML='<div class="zempty">Could not load Hall of Fame data.</div>'; } } } // ── Helpers ───────────────────────────────────────────────────────────────── function Zesc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")} function ZqtyClass(txt){const m=Zcl(txt).match(/(\d+)/);if(!m)return"";const n=+m[1];if(n>=10)return"zq4";if(n>=5)return"zq3";if(n>=3)return"zq2";if(n>=1)return"zq1";return""} function ZachClass(txt){ const t=Zcl(txt).toLowerCase();const c=[]; if(/\bmop\b/i.test(txt))c.push("zpmop"); else if(/\bmdp\b/i.test(txt))c.push("zpmdp"); else if(/\bmvp\b/i.test(txt))c.push("zpmvp"); else if(/\bpotw\b/i.test(txt)||t.includes("player of the week"))c.push("zppotw"); if(/\bs1\b/i.test(txt))c.push("zps1"); else if(/\bs2\b/i.test(txt))c.push("zps2"); else if(/\bs3\b/i.test(txt))c.push("zps3"); else if(/\bs4\b/i.test(txt))c.push("zps4"); else if(/\bs5\b/i.test(txt))c.push("zps5"); else if(/\bs6\b/i.test(txt))c.push("zps6"); if(t.includes("league mvp"))c.push("zpleaguemvp"); else if(t.includes("final mvp"))c.push("zpfinalmvp"); else if(t.includes("semifinal mvp"))c.push("zpsemifinalmvp"); else if(t.includes("all star"))c.push("zpallstar"); else if(t.includes("champion")||/\bs[1-6]\b/i.test(txt))c.push("zpchamp"); else if(t.includes("libero"))c.push("zplibero"); else if(t.includes("spiker"))c.push("zpspiker"); else if(/\bds\b/i.test(txt))c.push("zpds"); else if(t.includes("setter"))c.push("zpsetter"); return c.join(" "); } function ZfmtAch(item){ const s=Zesc(item);const m=Zcl(item).match(/^(\d+)\s*[xX]\s*(.+)$/); if(!m)return`<span class="zach">${s}</span>`; const qty=m[1]+"x";const label=m[2].trim();const qc=ZqtyClass(qty); return`<span class="zqty ${qc}">${Zesc(qty)}</span><span class="zach">${Zesc(label)}</span>`; } function ZpillsHTML(txt){ const items=Zcl(txt).split(",").map(x=>x.trim()).filter(Boolean); if(!items.length)return'<span class="zpill znil">—</span>'; return items.map(item=>`<span class="zpill ${ZachClass(item)}">${ZfmtAch(item)}</span>`).join(""); } function ZchipHTML(txt,lbl){ const items=Zcl(txt).split(",").map(x=>x.trim()).filter(Boolean); if(!items.length)return""; return items.map((item,i)=>`<span class="zpill ${ZachClass(item)}">${i===0&&lbl?`<small>${Zesc(lbl)}</small>`:""}${ZfmtAch(item)}</span>`).join(""); } // ── Sort / filter ──────────────────────────────────────────────────────────── function ZsortHall(){return[...ZHALL].sort((a,b)=>b.points-a.points||a.name.localeCompare(b.name))} function ZfiltHall(){ const q=Z$("zsearch").value.toLowerCase().trim(); let rows=ZHALL.filter(p=>!q||Zsrch(p).includes(q)); if(ZFILT==="champion")rows=rows.filter(p=>Zhas(p,"champions")); if(ZFILT==="mvp")     rows=rows.filter(p=>Zhas(p,"mvps")); if(ZFILT==="potw")    rows=rows.filter(p=>Zhas(p,"potw")); if(ZFILT==="series")  rows=rows.filter(p=>Zhas(p,"series")); return rows.sort((a,b)=>b.points-a.points||a.name.localeCompare(b.name)); } function ZfiltSeas(){ const q=Z$("zsearch").value.toLowerCase().trim(); return[...ZSEAS].sort((a,b)=>b.points-a.points||a.name.localeCompare(b.name)).filter(p=>!q||Zsrch(p).includes(q)); } function ZsortMvps9(){return[...ZMVPS9].sort((a,b)=>b.points-a.points||a.name.localeCompare(b.name))} function ZfiltMvps9(){ const q=Z$("zsearch").value.toLowerCase().trim(); return ZsortMvps9().filter(p=>!q||Zsrch(p).includes(q)); } // HOF uses its own filtered set — never touches ZHALL/ZSEAS/ZMVPS9 function ZfiltHof(){ const q=Z$("zsearch").value.toLowerCase().trim(); return[...ZHOF].sort((a,b)=>b.points-a.points||a.name.localeCompare(b.name)).filter(p=>!q||Zsrch(p).includes(q)); } // ── SVG helpers ────────────────────────────────────────────────────────────── function ZcrownSVG(){ return`<div class="zcrown-wrap"><svg class="zcrown-svg" viewBox="0 0 96 72" aria-hidden="true"> <defs><linearGradient id="zcg" x1="0" x2="1" y1="0" y2="1"> <stop offset="0" stop-color="#fff6b0"/><stop offset=".4" stop-color="#ffd338"/><stop offset="1" stop-color="#ff9800"/> </linearGradient></defs> <path d="M12 58h72l5-39-24 17L48 8 31 36 7 19l5 39Z" fill="url(#zcg)"/> <path d="M20 64h56" stroke="#ffe480" stroke-width="7" stroke-linecap="round"/> <circle cx="48" cy="12" r="5" fill="#fff9c4"/> <circle cx="8" cy="19" r="5" fill="#fff9c4"/> <circle cx="88" cy="19" r="5" fill="#fff9c4"/> </svg></div>`; } function ZhexBlue(r){return`<div class="zrhex"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 10px rgba(90,140,255,.4))"><polygon points="30,3.5 56.5,17.75 56.5,42.25 30,56.5 3.5,42.25 3.5,17.75" fill="rgba(90,140,255,.12)" stroke="rgba(90,140,255,.5)" stroke-width="2.2"/><text x="30" y="30" text-anchor="middle" dy=".36em" font-family="Space Mono,monospace" font-size="${String(r).length<=2?20:15}" font-weight="800" fill="#8aaeff">#${r}</text></svg></div>`} function ZhexGold(r){return`<div class="zrhex"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 10px rgba(255,213,56,.6))"><polygon points="30,3.5 56.5,17.75 56.5,42.25 30,56.5 3.5,42.25 3.5,17.75" fill="rgba(255,213,56,.12)" stroke="rgba(255,213,56,.7)" stroke-width="2.2"/><text x="30" y="30" text-anchor="middle" dy=".36em" font-family="Space Mono,monospace" font-size="${String(r).length<=2?20:15}" font-weight="800" fill="#ffdf40">#${r}</text></svg></div>`} function ZhexPurp(r){return`<div class="zrhex"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 10px rgba(123,79,255,.45))"><polygon points="30,3.5 56.5,17.75 56.5,42.25 30,56.5 3.5,42.25 3.5,17.75" fill="rgba(123,79,255,.12)" stroke="rgba(123,79,255,.6)" stroke-width="2.2"/><text x="30" y="30" text-anchor="middle" dy=".36em" font-family="Space Mono,monospace" font-size="${String(r).length<=2?20:15}" font-weight="800" fill="#a57dff">#${r}</text></svg></div>`} function ZrowHex(n){ const txt=String(n);const fs=txt.length<=2?20:txt.length<=3?15:11; let fill,stroke,textFill,glow; if(n===1){fill="rgba(255,213,56,.12)";stroke="rgba(255,213,56,.65)";textFill="#ffdf40";glow="rgba(255,213,56,.4)"} else if(n===2){fill="rgba(90,140,255,.12)";stroke="rgba(90,140,255,.55)";textFill="#8aaeff";glow="rgba(90,140,255,.35)"} else if(n===3){fill="rgba(123,79,255,.12)";stroke="rgba(123,79,255,.6)";textFill="#a57dff";glow="rgba(123,79,255,.38)"} else{fill="rgba(60,90,160,.08)";stroke="rgba(60,90,160,.28)";textFill="#4a6bb5";glow="transparent"} return`<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 8px ${glow})"> <polygon points="30,3.5 56.5,17.75 56.5,42.25 30,56.5 3.5,42.25 3.5,17.75" fill="${fill}" stroke="${stroke}" stroke-width="2.2"/> <text x="30" y="30" text-anchor="middle" dy=".36em" font-family="Space Mono,monospace" font-size="${fs}" font-weight="800" fill="${textFill}">#${txt}</text> </svg>`; } // ── Render: Accolades (podium + table) ─────────────────────────────────────── function ZrenderPodium(){ const top=ZsortHall().slice(0,3); if(!top.length){Z$("zpodium").innerHTML="";return} const ord=[top[1],top[0],top[2]]; const ranks=["2","1","3"]; const cls=["","zp1","zp3"]; const badgeFn=[ZhexBlue,ZhexGold,ZhexPurp]; Z$("zpodium").innerHTML=ord.filter(Boolean).map((p,i)=>` <article class="zpod ${cls[i]}"> ${i===1?ZcrownSVG():""} <div class="zpod-rank">${badgeFn[i](ranks[i])}</div> <div class="zpod-score"><div class="zpnum">${p.points}</div><div class="zplbl">POINTS</div></div> <div class="zpname">${Zesc(p.name)}</div> <div class="zppills">${ZchipHTML(p.top1,"TOP 1")}${ZchipHTML(p.champions,"")}${ZchipHTML(p.mvps,"")}</div> </article>`).join(""); } function ZrenderHall(){ const base=ZsortHall();base.forEach((p,i)=>p._rank=i+1); const rows=ZfiltHall(); const head=`<div class="zrow zrh"><span>Rank</span><span>Player</span><span>TOP 1</span><span>TOP 5+</span><span>MVPs</span><span>POTW</span><span>POTS</span><span>Champions</span><span>Points</span></div>`; if(!ZHALL.length){Z$("zhallTable").innerHTML='<div class="zempty">No Accolades data found.</div>';return} if(!rows.length){Z$("zhallTable").innerHTML=head+'<div class="zempty">No players match your search.</div>';return} Z$("zhallTable").innerHTML=head+rows.map(p=>` <div class="zrow"> <span class="zrrank">${ZrowHex(p._rank)}</span> <span class="zrplayer"><b>${Zesc(p.name)}</b></span> <span class="zrcell">${ZpillsHTML(p.top1)}</span> <span class="zrcell">${ZpillsHTML(p.top5)}</span> <span class="zrcell">${ZpillsHTML(p.mvps)}</span> <span class="zrcell">${p.potw   ? ZpillsHTML(p.potw)   : '<span class="zpill znil">—</span>'}</span> <span class="zrcell">${p.series ? ZpillsHTML(p.series) : '<span class="zpill znil">—</span>'}</span> <span class="zrcell">${ZpillsHTML(p.champions)}</span> <span class="zrtotal">${p.points}</span> </div>`).join(""); } // ── Render: Seasonal Rankings ──────────────────────────────────────────────── function ZrenderSeas(){ const rows=ZfiltSeas(); const head=`<div class="zrow zrs zrh"><span>Rank</span><span>Player</span><span>TOP 1</span><span>TOP 5</span><span>Points</span></div>`; if(!ZSEAS.length){Z$("zseasTable").innerHTML='<div class="zempty">No Seasonal Rankings data found.</div>';return} if(!rows.length){Z$("zseasTable").innerHTML=head+'<div class="zempty">No players match your search.</div>';return} Z$("zseasTable").innerHTML=head+rows.map((p,i)=>` <div class="zrow zrs"> <span class="zrrank">${ZrowHex(i+1)}</span> <span class="zrplayer"><b>${Zesc(p.name)}</b></span> <span class="zrcell">${ZpillsHTML(p.top1)}</span> <span class="zrcell">${ZpillsHTML(p.top5)}</span> <span class="zrtotal">${p.points}</span> </div>`).join(""); } // ── Render: MVP Season X ───────────────────────────────────────────────────── function ZrenderMvps9(){ const rows=ZfiltMvps9(); const head=`<div class="zrow zmvp zrh"><span>Rank</span><span>Player</span><span>Top 1</span><span>Top +5</span><span>POTW</span><span>MVPs</span><span>Points</span></div>`; if(!ZMVPS9.length){Z$("zmvps9Table").innerHTML='<div class="zempty">No Season X data found.</div>';return} if(!rows.length){Z$("zmvps9Table").innerHTML=head+'<div class="zempty">No players match your search.</div>';return} Z$("zmvps9Table").innerHTML=head+rows.map((p,i)=>` <div class="zrow zmvp"> <span class="zrrank">${ZrowHex(i+1)}</span> <span class="zrplayer"><b>${Zesc(p.name)}</b>${p.team?`<span class="zrteam">${Zesc(p.team)}</span>`:""}</span> <span class="zrcell">${p.top1?ZpillsHTML(p.top1):'<span class="zpill znil">—</span>'}</span> <span class="zrcell">${p.top5?ZpillsHTML(p.top5):'<span class="zpill znil">—</span>'}</span> <span class="zrcell">${p.potw?ZpillsHTML(p.potw):'<span class="zpill znil">—</span>'}</span> <span class="zrcell">${p.mvps?ZpillsHTML(p.mvps):'<span class="zpill znil">—</span>'}</span> <span class="zrtotal">${p.points}</span> </div>`).join(""); } // ── Render: Hall of Fame (Sheet 2 — only name + points) ────────────────────── function ZrenderHof(){ const rows=ZfiltHof(); Z$("zhofCount").textContent=`${ZHOF.length} inductee${ZHOF.length!==1?"s":""}`; const head=`<div class="zrow zhof zrh"><span>Rank</span><span>Player</span><span>Points</span></div>`; if(!ZHOF.length){Z$("zhofTable").innerHTML='<div class="zempty">No Hall of Fame inductees yet.</div>';return} if(!rows.length){Z$("zhofTable").innerHTML=head+'<div class="zempty">No players match your search.</div>';return} Z$("zhofTable").innerHTML=head+rows.map((p,i)=>` <div class="zrow zhof"> <span class="zrrank">${ZrowHex(i+1)}</span> <span class="zrplayer"><b>${Zesc(p.name)}</b></span> <span><span class="zrtotal">${p.points}</span></span> </div>`).join(""); } // ── Tab switching ───────────────────────────────────────────────────────────── function ZsetTab(tab){ ZTAB=tab; document.querySelectorAll(".ztab").forEach(b=>b.classList.toggle("zact",b.dataset.tab===tab)); const views={hall:Z$("zhallView"),seasonal:Z$("zseasView"),mvps9:Z$("zmvps9View"),hof:Z$("zhofView")}; Object.entries(views).forEach(([k,v])=>v.classList.toggle("zhide",k!==tab)); const active=views[tab]; active.classList.add("zview-enter");setTimeout(()=>active.classList.remove("zview-enter"),400); // Filter chips: only visible on Accolades tab Z$("zfilters").style.display=tab==="hall"?"":"none"; } // ── Render all (completely separate datasets) ──────────────────────────────── function ZrenderAll(){ // Count unique players across ALL datasets combined (for header badge) const uniq=new Set([ ...ZHALL.map(p=>p.name.toLowerCase().trim()), ...ZSEAS.map(p=>p.name.toLowerCase().trim()), ...ZMVPS9.map(p=>p.name.toLowerCase().trim()), ...ZHOF.map(p=>p.name.toLowerCase().trim()), ]); Z$("ztotal").textContent=uniq.size; ZrenderPodium(); ZrenderHall(); ZrenderSeas(); ZrenderMvps9(); ZrenderHof(); } // ── Events ─────────────────────────────────────────────────────────────────── Z$("zsearch").addEventListener("input",ZrenderAll); document.querySelectorAll(".ztab").forEach(b=>b.addEventListener("click",()=>ZsetTab(b.dataset.tab))); document.querySelectorAll(".zfchip").forEach(b=>b.addEventListener("click",()=>{ ZFILT=b.dataset.f; document.querySelectorAll(".zfchip").forEach(c=>c.classList.toggle("zfact",c===b)); ZrenderAll(); })); ZsetTab("hall"); Zsync(); setInterval(Zsync,60000); </script>
+    <script>
+        const ZAPI = "https://script.google.com/macros/s/AKfycbyypYhjFNz4gfzgcKjStiW1CrncZIOwjbUCwnysaSsM1XDc4Zsf7A_4bjB5fWb68Ie3/exec";
+        const ZAPI_SEASONX = ""; // ← pega aquí el link de tu API de Season X cuando lo tengas
+        // Separate data stores — never mixed
+        let ZHALL = [], ZSEAS = [], ZMVPS9 = [], ZHOF = [], ZLSIG = "", ZTAB = "hall", ZFILT = "all";
+        const Z$ = id => document.getElementById(id);
+        const Zcl = v => String(v ?? "").trim();
+        const Zkey = (r, a) => { for (const n of a) if (r[n] != null && Zcl(r[n])) return r[n]; return "" };
+        const Zhas = (p, k) => Zcl(p[k]).length > 0;
+        const Zsrch = p => Object.values(p).join(" ").toLowerCase();
+
+        function Zstatus(txt, type) {
+            const el = Z$("zsync"); el.innerHTML = "";
+            const dot = document.createElement("div"); dot.className = "zbdot";
+            const sp = document.createElement("span"); sp.textContent = txt;
+            el.appendChild(dot); el.appendChild(sp);
+            el.className = "zbadge" + (type ? " z" + type : "");
+        }
+
+        // ── Normalizers (each only touches its own data) ────────────────────────────
+        function ZnormHall(r) {
+            return {
+                name: Zcl(Zkey(r, ["name", "player", "players", "Player", "Players", "PLAYER", "PLAYERS", "Jogador", "JOGADOR"])),
+                handle: Zcl(Zkey(r, ["handle", "user", "discord", "Handle", "@", "Discord", "User"])),
+                top1: Zcl(Zkey(r, ["top1", "TOP1", "TOP 1", "Top 1", "top 1"])),
+                top5: Zcl(Zkey(r, ["top5", "TOP5", "TOP 5+", "Top 5+", "top 5+", "TOP 5"])),
+                potw: Zcl(Zkey(r, ["potw", "POTW", "Player of the Week", "PLAYER OF THE WEEK"])),
+                series: Zcl(Zkey(r, ["series", "Series", "Player of the Series", "PLAYER OF THE SERIES"])),
+                mvps: Zcl(Zkey(r, ["mvps", "MVPs", "MVPS", "MVP"])),
+                champions: Zcl(Zkey(r, ["champions", "Champions", "CHAMPIONS", "Champion"])),
+                points: Number(Zkey(r, ["points", "Points", "POINTS", "Total", "TOTAL"]) || 0) || 0
+            };
+        }
+        function ZnormSeas(r) {
+            return {
+                name: Zcl(Zkey(r, ["name", "player", "players", "Player", "Players", "PLAYER", "PLAYERS", "Jogador", "JOGADOR"])),
+                handle: Zcl(Zkey(r, ["handle", "user", "discord", "Handle", "@", "Discord", "User"])),
+                top1: Zcl(Zkey(r, ["top1", "TOP1", "TOP 1", "Top 1", "top 1"])),
+                top5: Zcl(Zkey(r, ["top5", "TOP5", "TOP 5+", "Top 5+", "top 5+", "TOP 5", "Top 5"])),
+                points: Number(Zkey(r, ["points", "Points", "POINTS", "Total", "TOTAL", "Pts", "PTS"]) || 0) || 0
+            };
+        }
+        function ZnormMvpS9(r) {
+            return {
+                name: Zcl(Zkey(r, ["name", "player", "players", "Player", "Players", "PLAYER", "PLAYERS"])),
+                team: Zcl(Zkey(r, ["team", "Team", "TEAM"])),
+                top1: Zcl(Zkey(r, ["top1", "TOP1", "Top 1", "top 1", "TOP 1"])),
+                top5: Zcl(Zkey(r, ["top5", "TOP5", "Top 5", "top 5", "TOP 5", "top+5", "TOP+5"])),
+                potw: Zcl(Zkey(r, ["potw", "POTW", "Player of the Week", "PLAYER OF THE WEEK"])),
+                mvps: Zcl(Zkey(r, ["mvps", "MVPs", "MVPS", "mvp", "MVP", "awards", "Awards"])),
+                points: Number(Zkey(r, ["points", "Points", "POINTS", "Total", "TOTAL", "Pts", "PTS"]) || 0) || 0
+            };
+        }
+        // Hall of Fame (Sheet 2) — only Player + Total Points
+        function ZnormHof(r) {
+            return {
+                name: Zcl(Zkey(r, ["name", "player", "players", "Player", "Players", "PLAYER", "PLAYERS"])),
+                points: Number(Zkey(r, ["points", "totalPoints", "total_points", "Total Points", "Total", "TOTAL", "TotalPoints", "Pts", "PTS"]) || 0) || 0
+            };
+        }
+        // ── Payload reader — strictly separates the sources ─────────────────────────
+        function ZreadPayload(raw) {
+            if (Array.isArray(raw)) return { hall: raw, seasonal: [], mvps9: [], hof: [] };
+            return {
+                hall: raw.rankings || raw.hall || raw.hof || raw.players || raw.rows || raw.data || [],
+                seasonal: raw.seasonalRankings || raw.seasonal || [],
+                mvps9: raw.mvpsS9 || raw.mvpS9 || raw.mvps9 || raw.mvp9 || raw["Season 9"] || raw.s9Mvps || raw.s9MVPs || [],
+                hof: raw.hallOfFame || raw.hof_sheet2 || raw.hof2 || []
+            };
+        }
+
+        async function Zsync() {
+            try {
+                if (!ZAPI || ZAPI.includes("SEU_LINK")) { Zstatus("ADD SHEET LINK", "err"); return }
+                Zstatus("SYNCING");
+
+                const mainCtrl = new AbortController();
+                const mainTimer = setTimeout(() => mainCtrl.abort(), 12000);
+                let mainRes;
+                try {
+                    mainRes = await fetch(ZAPI, { method: "GET", cache: "no-store", signal: mainCtrl.signal, redirect: "follow" });
+                } finally { clearTimeout(mainTimer) }
+
+                const mainRawText = await mainRes.text();
+                if (!mainRes.ok) {
+                    console.error("MLV sync: HTTP error on main sheet", mainRes.status, mainRawText.slice(0, 300));
+                    throw new Error("MAIN HTTP " + mainRes.status);
+                }
+
+                let mainRaw;
+                try {
+                    mainRaw = JSON.parse(mainRawText);
+                } catch (parseErr) {
+                    console.error("MLV sync: main sheet response was not valid JSON. Raw response was:", mainRawText.slice(0, 500));
+                    throw new Error("MAIN NOT JSON");
+                }
+
+                const pl = ZreadPayload(mainRaw);
+                const hall = (pl.hall || []).map(ZnormHall).filter(p => p.name);
+                const seas = (pl.seasonal || []).map(ZnormSeas).filter(p => p.name);
+                const hof = (pl.hof || []).map(ZnormHof).filter(p => p.name);
+
+                console.log("MLV sync: main sheet OK. hall:", hall.length, "seasonal:", seas.length, "hof:", hof.length, "| raw payload keys:", Object.keys(mainRaw));
+
+                // Season X — separate endpoint (optional, not configured yet)
+                let mvps9 = [];
+                if (ZAPI_SEASONX && !ZAPI_SEASONX.includes("SEU_LINK")) {
+                    try {
+                        const s9Ctrl = new AbortController();
+                        const s9Timer = setTimeout(() => s9Ctrl.abort(), 12000);
+                        let s9Res;
+                        try {
+                            s9Res = await fetch(ZAPI_SEASONX, { method: "GET", cache: "no-store", signal: s9Ctrl.signal, redirect: "follow" });
+                        } finally { clearTimeout(s9Timer) }
+                        if (!s9Res.ok) throw new Error("S9 HTTP " + s9Res.status);
+                        const s9Pl = ZreadPayload(JSON.parse(await s9Res.text()));
+                        mvps9 = (s9Pl.mvps9 || []).map(ZnormMvpS9).filter(p => p.name);
+                    } catch (e) { console.error("Season X error:", e) }
+                }
+
+                const sig = JSON.stringify({ hall, seas, mvps9, hof });
+                if (sig !== ZLSIG) { ZHALL = hall; ZSEAS = seas; ZMVPS9 = mvps9; ZHOF = hof; ZLSIG = sig; ZrenderAll() }
+
+                const gotAny = hall.length || seas.length || hof.length || mvps9.length;
+                Zstatus(gotAny ? "LIVE DATA" : "NO PLAYERS FOUND", gotAny ? "live" : "err");
+            } catch (err) {
+                console.error("MLV sync failed:", err);
+                const timedOut = err && err.name === "AbortError";
+                Zstatus(timedOut ? "TIMEOUT" : "SHEET ERROR", "err");
+                if (!ZHALL.length && !ZSEAS.length && !ZHOF.length) {
+                    const msg = timedOut
+                        ? "Timed out connecting to Google Sheets. Check that the Apps Script link is correct and deployed with 'Anyone' access."
+                        : "Could not load Google Sheet. Open the browser console (F12) for details.";
+                    Z$("zpodium").innerHTML = "";
+                    Z$("zhallTable").innerHTML = `<div class="zempty">${msg}</div>`;
+                    Z$("zseasTable").innerHTML = '<div class="zempty">Could not load seasonal data.</div>';
+                    Z$("zmvps9Table").innerHTML = '<div class="zempty">Could not load Season X data.</div>';
+                    Z$("zhofTable").innerHTML = '<div class="zempty">Could not load Hall of Fame data.</div>';
+                }
+            }
+        }
+
+        // ── Helpers ───────────────────────────────────────────────────────────────
+        function Zesc(v) { return String(v ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;") }
+        function ZqtyClass(txt) { const m = Zcl(txt).match(/(\d+)/); if (!m) return ""; const n = +m[1]; if (n >= 10) return "zq4"; if (n >= 5) return "zq3"; if (n >= 3) return "zq2"; if (n >= 1) return "zq1"; return "" }
+        function ZachClass(txt) {
+            const t = Zcl(txt).toLowerCase(); const c = [];
+            if (/\bmop\b/i.test(txt)) c.push("zpmop");
+            else if (/\bmdp\b/i.test(txt)) c.push("zpmdp");
+            else if (/\bmvp\b/i.test(txt)) c.push("zpmvp");
+            else if (/\bpotw\b/i.test(txt) || t.includes("player of the week")) c.push("zppotw");
+            if (/\bs1\b/i.test(txt)) c.push("zps1");
+            else if (/\bs2\b/i.test(txt)) c.push("zps2");
+            else if (/\bs3\b/i.test(txt)) c.push("zps3");
+            else if (/\bs4\b/i.test(txt)) c.push("zps4");
+            else if (/\bs5\b/i.test(txt)) c.push("zps5");
+            else if (/\bs6\b/i.test(txt)) c.push("zps6");
+            if (t.includes("league mvp")) c.push("zpleaguemvp");
+            else if (t.includes("final mvp")) c.push("zpfinalmvp");
+            else if (t.includes("semifinal mvp")) c.push("zpsemifinalmvp");
+            else if (t.includes("all star")) c.push("zpallstar");
+            else if (t.includes("champion") || /\bs[1-6]\b/i.test(txt)) c.push("zpchamp");
+            else if (t.includes("libero")) c.push("zplibero");
+            else if (t.includes("spiker")) c.push("zpspiker");
+            else if (/\bds\b/i.test(txt)) c.push("zpds");
+            else if (t.includes("setter")) c.push("zpsetter");
+            return c.join(" ");
+        }
+        function ZfmtAch(item) {
+            const s = Zesc(item); const m = Zcl(item).match(/^(\d+)\s*[xX]\s*(.+)$/);
+            if (!m) return `<span class="zach">${s}</span>`;
+            const qty = m[1] + "x"; const label = m[2].trim(); const qc = ZqtyClass(qty);
+            return `<span class="zqty ${qc}">${Zesc(qty)}</span><span class="zach">${Zesc(label)}</span>`;
+        }
+        function ZpillsHTML(txt) {
+            const items = Zcl(txt).split(",").map(x => x.trim()).filter(Boolean);
+            if (!items.length) return '<span class="zpill znil">—</span>';
+            return items.map(item => `<span class="zpill ${ZachClass(item)}">${ZfmtAch(item)}</span>`).join("");
+        }
+        function ZchipHTML(txt, lbl) {
+            const items = Zcl(txt).split(",").map(x => x.trim()).filter(Boolean);
+            if (!items.length) return "";
+            return items.map((item, i) => `<span class="zpill ${ZachClass(item)}">${i === 0 && lbl ? `<small>${Zesc(lbl)}</small>` : ""}${ZfmtAch(item)}</span>`).join("");
+        }
+        // ── Sort / filter ────────────────────────────────────────────────────────────
+        function ZsortHall() { return [...ZHALL].sort((a, b) => b.points - a.points || a.name.localeCompare(b.name)) }
+        function ZfiltHall() {
+            const q = Z$("zsearch").value.toLowerCase().trim();
+            let rows = ZHALL.filter(p => !q || Zsrch(p).includes(q));
+            if (ZFILT === "champion") rows = rows.filter(p => Zhas(p, "champions"));
+            if (ZFILT === "mvp") rows = rows.filter(p => Zhas(p, "mvps"));
+            if (ZFILT === "potw") rows = rows.filter(p => Zhas(p, "potw"));
+            if (ZFILT === "series") rows = rows.filter(p => Zhas(p, "series"));
+            return rows.sort((a, b) => b.points - a.points || a.name.localeCompare(b.name));
+        }
+        function ZfiltSeas() {
+            const q = Z$("zsearch").value.toLowerCase().trim();
+            return [...ZSEAS].sort((a, b) => b.points - a.points || a.name.localeCompare(b.name)).filter(p => !q || Zsrch(p).includes(q));
+        }
+        function ZsortMvps9() { return [...ZMVPS9].sort((a, b) => b.points - a.points || a.name.localeCompare(b.name)) }
+        function ZfiltMvps9() {
+            const q = Z$("zsearch").value.toLowerCase().trim();
+            return ZsortMvps9().filter(p => !q || Zsrch(p).includes(q));
+        }
+        // HOF uses its own filtered set — never touches ZHALL/ZSEAS/ZMVPS9
+        function ZfiltHof() {
+            const q = Z$("zsearch").value.toLowerCase().trim();
+            return [...ZHOF].sort((a, b) => b.points - a.points || a.name.localeCompare(b.name)).filter(p => !q || Zsrch(p).includes(q));
+        }
+        // ── SVG helpers ──────────────────────────────────────────────────────────────
+        function ZcrownSVG() { return `<div class="zcrown-wrap"><svg class="zcrown-svg" viewBox="0 0 96 72" aria-hidden="true"> <defs><linearGradient id="zcg" x1="0" x2="1" y1="0" y2="1"> <stop offset="0" stop-color="#fff6b0"/><stop offset=".4" stop-color="#ffd338"/><stop offset="1" stop-color="#ff9800"/> </linearGradient></defs> <path d="M12 58h72l5-39-24 17L48 8 31 36 7 19l5 39Z" fill="url(#zcg)"/> <path d="M20 64h56" stroke="#ffe480" stroke-width="7" stroke-linecap="round"/> <circle cx="48" cy="12" r="5" fill="#fff9c4"/> <circle cx="8" cy="19" r="5" fill="#fff9c4"/> <circle cx="88" cy="19" r="5" fill="#fff9c4"/> </svg></div>`; }
+        function ZhexBlue(r) { return `<div class="zrhex"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 10px rgba(90,140,255,.4))"><polygon points="30,3.5 56.5,17.75 56.5,42.25 30,56.5 3.5,42.25 3.5,17.75" fill="rgba(90,140,255,.12)" stroke="rgba(90,140,255,.5)" stroke-width="2.2"/><text x="30" y="30" text-anchor="middle" dy=".36em" font-family="Space Mono,monospace" font-size="${String(r).length <= 2 ? 20 : 15}" font-weight="800" fill="#8aaeff">#${r}</text></svg></div>` }
+        function ZhexGold(r) { return `<div class="zrhex"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 10px rgba(255,213,56,.6))"><polygon points="30,3.5 56.5,17.75 56.5,42.25 30,56.5 3.5,42.25 3.5,17.75" fill="rgba(255,213,56,.12)" stroke="rgba(255,213,56,.7)" stroke-width="2.2"/><text x="30" y="30" text-anchor="middle" dy=".36em" font-family="Space Mono,monospace" font-size="${String(r).length <= 2 ? 20 : 15}" font-weight="800" fill="#ffdf40">#${r}</text></svg></div>` }
+        function ZhexPurp(r) { return `<div class="zrhex"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 10px rgba(123,79,255,.45))"><polygon points="30,3.5 56.5,17.75 56.5,42.25 30,56.5 3.5,42.25 3.5,17.75" fill="rgba(123,79,255,.12)" stroke="rgba(123,79,255,.6)" stroke-width="2.2"/><text x="30" y="30" text-anchor="middle" dy=".36em" font-family="Space Mono,monospace" font-size="${String(r).length <= 2 ? 20 : 15}" font-weight="800" fill="#a57dff">#${r}</text></svg></div>` }
+        function ZrowHex(n) {
+            const txt = String(n); const fs = txt.length <= 2 ? 20 : txt.length <= 3 ? 15 : 11;
+            let fill, stroke, textFill, glow;
+            if (n === 1) { fill = "rgba(255,213,56,.12)"; stroke = "rgba(255,213,56,.65)"; textFill = "#ffdf40"; glow = "rgba(255,213,56,.4)" }
+            else if (n === 2) { fill = "rgba(90,140,255,.12)"; stroke = "rgba(90,140,255,.55)"; textFill = "#8aaeff"; glow = "rgba(90,140,255,.35)" }
+            else if (n === 3) { fill = "rgba(123,79,255,.12)"; stroke = "rgba(123,79,255,.6)"; textFill = "#a57dff"; glow = "rgba(123,79,255,.38)" }
+            else { fill = "rgba(60,90,160,.08)"; stroke = "rgba(60,90,160,.28)"; textFill = "#4a6bb5"; glow = "transparent" }
+            return `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 8px ${glow})"> <polygon points="30,3.5 56.5,17.75 56.5,42.25 30,56.5 3.5,42.25 3.5,17.75" fill="${fill}" stroke="${stroke}" stroke-width="2.2"/> <text x="30" y="30" text-anchor="middle" dy=".36em" font-family="Space Mono,monospace" font-size="${fs}" font-weight="800" fill="${textFill}">#${txt}</text> </svg>`;
+        }
+        // ── Render: Accolades (podium + table) ───────────────────────────────────────
+        function ZrenderPodium() {
+            const top = ZsortHall().slice(0, 3); if (!top.length) { Z$("zpodium").innerHTML = ""; return }
+            const ord = [top[1], top[0], top[2]]; const ranks = ["2", "1", "3"]; const cls = ["", "zp1", "zp3"]; const badgeFn = [ZhexBlue, ZhexGold, ZhexPurp];
+            Z$("zpodium").innerHTML = ord.filter(Boolean).map((p, i) => `
+      <article class="zpod ${cls[i]}">
+        ${i === 1 ? ZcrownSVG() : ""}
+        <div class="zpod-rank">${badgeFn[i](ranks[i])}</div>
+        <div class="zpod-score"><div class="zpnum">${p.points}</div><div class="zplbl">POINTS</div></div>
+        <div class="zpname">${Zesc(p.name)}</div>
+        <div class="zppills">${ZchipHTML(p.top1, "TOP 1")}${ZchipHTML(p.champions, "")}${ZchipHTML(p.mvps, "")}</div>
+      </article>`).join("");
+        }
+        function ZrenderHall() {
+            const base = ZsortHall(); base.forEach((p, i) => p._rank = i + 1);
+            const rows = ZfiltHall();
+            const head = `<div class="zrow zrh"><span>Rank</span><span>Player</span><span>TOP 1</span><span>TOP 5+</span><span>MVPs</span><span>POTW</span><span>POTS</span><span>Champions</span><span>Points</span></div>`;
+            if (!ZHALL.length) { Z$("zhallTable").innerHTML = '<div class="zempty">No Accolades data found.</div>'; return }
+            if (!rows.length) { Z$("zhallTable").innerHTML = head + '<div class="zempty">No players match your search.</div>'; return }
+            Z$("zhallTable").innerHTML = head + rows.map(p => `
+      <div class="zrow">
+        <span class="zrrank">${ZrowHex(p._rank)}</span>
+        <span class="zrplayer"><b>${Zesc(p.name)}</b></span>
+        <span class="zrcell">${ZpillsHTML(p.top1)}</span>
+        <span class="zrcell">${ZpillsHTML(p.top5)}</span>
+        <span class="zrcell">${ZpillsHTML(p.mvps)}</span>
+        <span class="zrcell">${p.potw ? ZpillsHTML(p.potw) : '<span class="zpill znil">—</span>'}</span>
+        <span class="zrcell">${p.series ? ZpillsHTML(p.series) : '<span class="zpill znil">—</span>'}</span>
+        <span class="zrcell">${ZpillsHTML(p.champions)}</span>
+        <span class="zrtotal">${p.points}</span>
+      </div>`).join("");
+        }
+        // ── Render: Seasonal Rankings ─────────────────────────────────────────────────
+        function ZrenderSeas() {
+            const rows = ZfiltSeas();
+            const head = `<div class="zrow zrs zrh"><span>Rank</span><span>Player</span><span>TOP 1</span><span>TOP 5</span><span>Points</span></div>`;
+            if (!ZSEAS.length) { Z$("zseasTable").innerHTML = '<div class="zempty">No Seasonal Rankings data found.</div>'; return }
+            if (!rows.length) { Z$("zseasTable").innerHTML = head + '<div class="zempty">No players match your search.</div>'; return }
+            Z$("zseasTable").innerHTML = head + rows.map((p, i) => `
+      <div class="zrow zrs">
+        <span class="zrrank">${ZrowHex(i + 1)}</span>
+        <span class="zrplayer"><b>${Zesc(p.name)}</b></span>
+        <span class="zrcell">${ZpillsHTML(p.top1)}</span>
+        <span class="zrcell">${ZpillsHTML(p.top5)}</span>
+        <span class="zrtotal">${p.points}</span>
+      </div>`).join("");
+        }
+        // ── Render: MVP Season X ──────────────────────────────────────────────────────
+        function ZrenderMvps9() {
+            const rows = ZfiltMvps9();
+            const head = `<div class="zrow zmvp zrh"><span>Rank</span><span>Player</span><span>Top 1</span><span>Top +5</span><span>POTW</span><span>MVPs</span><span>Points</span></div>`;
+            if (!ZMVPS9.length) { Z$("zmvps9Table").innerHTML = '<div class="zempty">No Season X data found.</div>'; return }
+            if (!rows.length) { Z$("zmvps9Table").innerHTML = head + '<div class="zempty">No players match your search.</div>'; return }
+            Z$("zmvps9Table").innerHTML = head + rows.map((p, i) => `
+      <div class="zrow zmvp">
+        <span class="zrrank">${ZrowHex(i + 1)}</span>
+        <span class="zrplayer"><b>${Zesc(p.name)}</b>${p.team ? `<span class="zrteam">${Zesc(p.team)}</span>` : ""}</span>
+        <span class="zrcell">${p.top1 ? ZpillsHTML(p.top1) : '<span class="zpill znil">—</span>'}</span>
+        <span class="zrcell">${p.top5 ? ZpillsHTML(p.top5) : '<span class="zpill znil">—</span>'}</span>
+        <span class="zrcell">${p.potw ? ZpillsHTML(p.potw) : '<span class="zpill znil">—</span>'}</span>
+        <span class="zrcell">${p.mvps ? ZpillsHTML(p.mvps) : '<span class="zpill znil">—</span>'}</span>
+        <span class="zrtotal">${p.points}</span>
+      </div>`).join("");
+        }
+        // ── Render: Hall of Fame (Sheet 2 — only name + points) ─────────────────────
+        function ZrenderHof() {
+            const rows = ZfiltHof();
+            Z$("zhofCount").textContent = `${ZHOF.length} inductee${ZHOF.length !== 1 ? "s" : ""}`;
+            const head = `<div class="zrow zhof zrh"><span>Rank</span><span>Player</span><span>Points</span></div>`;
+            if (!ZHOF.length) { Z$("zhofTable").innerHTML = '<div class="zempty">No Hall of Fame inductees yet.</div>'; return }
+            if (!rows.length) { Z$("zhofTable").innerHTML = head + '<div class="zempty">No players match your search.</div>'; return }
+            Z$("zhofTable").innerHTML = head + rows.map((p, i) => `
+      <div class="zrow zhof">
+        <span class="zrrank">${ZrowHex(i + 1)}</span>
+        <span class="zrplayer"><b>${Zesc(p.name)}</b></span>
+        <span><span class="zrtotal">${p.points}</span></span>
+      </div>`).join("");
+        }
+        // ── Tab switching ─────────────────────────────────────────────────────────────
+        function ZsetTab(tab) {
+            ZTAB = tab;
+            document.querySelectorAll(".ztab").forEach(b => b.classList.toggle("zact", b.dataset.tab === tab));
+            const views = { hall: Z$("zhallView"), seasonal: Z$("zseasView"), mvps9: Z$("zmvps9View"), hof: Z$("zhofView") };
+            Object.entries(views).forEach(([k, v]) => v.classList.toggle("zhide", k !== tab));
+            const active = views[tab]; active.classList.add("zview-enter"); setTimeout(() => active.classList.remove("zview-enter"), 400);
+            Z$("zfilters").style.display = tab === "hall" ? "" : "none";
+        }
+        // ── Render all (completely separate datasets) ────────────────────────────────
+        function ZrenderAll() {
+            const uniq = new Set([
+                ...ZHALL.map(p => p.name.toLowerCase().trim()),
+                ...ZSEAS.map(p => p.name.toLowerCase().trim()),
+                ...ZMVPS9.map(p => p.name.toLowerCase().trim()),
+                ...ZHOF.map(p => p.name.toLowerCase().trim()),
+            ]);
+            Z$("ztotal").textContent = uniq.size;
+            ZrenderPodium(); ZrenderHall(); ZrenderSeas(); ZrenderMvps9(); ZrenderHof();
+        }
+        // ── Events ────────────────────────────────────────────────────────────────────
+        Z$("zsearch").addEventListener("input", ZrenderAll);
+        document.querySelectorAll(".ztab").forEach(b => b.addEventListener("click", () => ZsetTab(b.dataset.tab)));
+        document.querySelectorAll(".zfchip").forEach(b => b.addEventListener("click", () => {
+            ZFILT = b.dataset.f;
+            document.querySelectorAll(".zfchip").forEach(c => c.classList.toggle("zfact", c === b));
+            ZrenderAll();
+        }));
+        ZsetTab("hall");
+        Zsync();
+        setInterval(Zsync, 60000);
+    </script>
 </body>
 
 </html>
