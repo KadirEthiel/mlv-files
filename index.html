@@ -1865,7 +1865,7 @@
     </div>
     <script>
         const ZAPI = "https://script.google.com/macros/s/AKfycbyypYhjFNz4gfzgcKjStiW1CrncZIOwjbUCwnysaSsM1XDc4Zsf7A_4bjB5fWb68Ie3/exec";
-        const ZAPI_SEASON11 = "https://script.google.com/macros/s/AKfycbwB_LaIm_w5kKFhpunqxLaCGStLmvCkeH9Je-_vHPdAEGhy9gWhr3N_sxMcIoBHOD4hAg/exec"; 
+        const ZAPI_SEASON11 = "https://script.google.com/macros/s/AKfycbx4nL3ADhC1QmkB4ZbD2EZSoUh4akT1I-HoqvFRzjlOr64zEcHr8r3JXZzCTyHWx0M/exec"; 
         // Separate data stores — never mixed
         let ZHALL = [], ZSEAS = [], ZMVPS11 = [], ZHOF = [], ZLSIG = "", ZTAB = "hall", ZFILT = "all";
         const Z$ = id => document.getElementById(id);
@@ -1971,7 +1971,7 @@
 
                 // Season 11 — separate endpoint (paste the new S11 Apps Script URL)
                 let mvps11 = [];
-                if (ZAPI_SEASON11 && !ZAPI_SEASON11.includes("https://script.google.com/macros/s/AKfycbwB_LaIm_w5kKFhpunqxLaCGStLmvCkeH9Je-_vHPdAEGhy9gWhr3N_sxMcIoBHOD4hAg/exec")) {
+                if (ZAPI_SEASON11 && !ZAPI_SEASON11.includes("https://script.google.com/macros/s/AKfycbx4nL3ADhC1QmkB4ZbD2EZSoUh4akT1I-HoqvFRzjlOr64zEcHr8r3JXZzCTyHWx0M/exec")) {
                     try {
                         const s11Ctrl = new AbortController();
                         const s11Timer = setTimeout(() => s11Ctrl.abort(), 12000);
@@ -2077,6 +2077,11 @@
         }
         // ── SVG helpers ──────────────────────────────────────────────────────────────
         function ZcrownSVG() { return `<div class="zcrown-wrap"><svg class="zcrown-svg" viewBox="0 0 96 72" aria-hidden="true"> <defs><linearGradient id="zcg" x1="0" x2="1" y1="0" y2="1"> <stop offset="0" stop-color="#fff6b0"/><stop offset=".4" stop-color="#ffd338"/><stop offset="1" stop-color="#ff9800"/> </linearGradient></defs> <path d="M12 58h72l5-39-24 17L48 8 31 36 7 19l5 39Z" fill="url(#zcg)"/> <path d="M20 64h56" stroke="#ffe480" stroke-width="7" stroke-linecap="round"/> <circle cx="48" cy="12" r="5" fill="#fff9c4"/> <circle cx="8" cy="19" r="5" fill="#fff9c4"/> <circle cx="88" cy="19" r="5" fill="#fff9c4"/> </svg></div>`; }
+        function ZhexGold(r) {
+            const label = String(r);
+            const fontSize = label.length <= 2 ? 20 : label.length <= 3 ? 15 : 11;
+            return `<div class="zrhex"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rank ${label}" style="filter:drop-shadow(0 0 10px rgba(245,181,55,.58))"><defs><linearGradient id="rankGold${label}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF2B8"/><stop offset=".48" stop-color="#E9B94E"/><stop offset="1" stop-color="#A96B18"/></linearGradient></defs><polygon points="30,3.5 56.5,17.75 56.5,42.25 30,56.5 3.5,42.25 3.5,17.75" fill="rgba(222,163,54,.16)" stroke="url(#rankGold${label})" stroke-width="2.2"/><text x="30" y="30" text-anchor="middle" dy=".36em" font-family="Space Mono,monospace" font-size="${fontSize}" font-weight="800" fill="#FFE6A0">#${label}</text></svg></div>`;
+        }
         function ZhexBlue(r) { return ZhexGold(r) }
         function ZhexPurp(r) { return ZhexGold(r) }
         function ZrowHex(n) {
