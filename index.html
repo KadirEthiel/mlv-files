@@ -1865,7 +1865,7 @@
     </div>
     <script>
         const ZAPI = "https://script.google.com/macros/s/AKfycbyypYhjFNz4gfzgcKjStiW1CrncZIOwjbUCwnysaSsM1XDc4Zsf7A_4bjB5fWb68Ie3/exec";
-        const ZAPI_SEASON11 = "https://script.google.com/macros/s/AKfycbx4nL3ADhC1QmkB4ZbD2EZSoUh4akT1I-HoqvFRzjlOr64zEcHr8r3JXZzCTyHWx0M/exec"; 
+        const ZAPI_SEASON11 = "https://script.google.com/macros/s/AKfycbxmek6-xydMXwPJiKmoMNdptEz7zCV1NWEw51_LW5ITWcvu4aP7YYHR_W613UmpyphvEw/exec"; // Web App URL del Apps Script MLV MVP S11
         // Separate data stores — never mixed
         let ZHALL = [], ZSEAS = [], ZMVPS11 = [], ZHOF = [], ZLSIG = "", ZTAB = "hall", ZFILT = "all";
         const Z$ = id => document.getElementById(id);
@@ -1971,7 +1971,7 @@
 
                 // Season 11 — separate endpoint (paste the new S11 Apps Script URL)
                 let mvps11 = [];
-                if (ZAPI_SEASON11 && !ZAPI_SEASON11.includes("https://script.google.com/macros/s/AKfycbx4nL3ADhC1QmkB4ZbD2EZSoUh4akT1I-HoqvFRzjlOr64zEcHr8r3JXZzCTyHWx0M/exec")) {
+                if (ZAPI_SEASON11 && !ZAPI_SEASON11.includes("PASTE_S11_WEB_APP_URL_HERE")) {
                     try {
                         const s11Ctrl = new AbortController();
                         const s11Timer = setTimeout(() => s11Ctrl.abort(), 12000);
