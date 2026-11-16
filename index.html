@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>MLV MVP Season 11</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Oxanium:wght@600;700;800&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --z0: #02040f;
+            --z1: #060b1e;
+            --z2: #0b1230;
+            --z3: #111c44;
+            --z4: #1a2860;
+            --z5: #233580;
+            --z6: #d99a18;
+            --z7: #f2bd4b;
+            --z8: #8aaeff;
+            --z9: #c2d8ff;
+            --za: #e8f2ff;
+            --zb: #ffffff;
+            --zc0: #080515;
+            --zc1: #12062a;
+            --zc2: #1e0b42;
+            --zc3: #2d1265;
+            --zc4: #3d1a8a;
+            --zc5: #5a28d0;
+            --zc6: #e6a800;
+            --zc7: #a57dff;
+            --zc8: #cdb8ff;
+            --zg0: #ffdf40;
+            --zg1: #ffc808;
+            --zg2: #e6a800;
+            --zr0: #d99a18;
+            --zr1: #f2bd4b;
+            --zt0: #00e8c8;
+            --zt1: #4dfff0;
+            --zm0: #f0c45a;
+            --zm1: #ffe1a0;
+            --zn0: rgba(90, 140, 255, .06);
+            --zn1: rgba(90, 140, 255, .12);
+            --zn2: rgba(90, 140, 255, .22);
+            --zn3: rgba(90, 140, 255, .38);
+            --zline: rgba(120, 160, 255, .14);
+            --zline2: rgba(120, 160, 255, .08);
+            --text: #ddeeff;
+            --muted: #7a9bd4;
+            --muted2: #3d5990;
+            --ease: cubic-bezier(.22, .68, 0, 1.2);
+            --easio: cubic-bezier(.4, 0, .2, 1);
+            --r1: 12px;
+            --r2: 18px;
+            --r3: 26px;
+            --r4: 40px;
+        }
+
+        html {
+            overflow-x: hidden
+        }
+
+        html,
+        body {
+            min-height: 100%;
+            font-family: 'Manrope', sans-serif;
+            color: var(--text);
+            background: var(--z0);
+            -webkit-font-smoothing: antialiased
+        }
+
+        body {
+            padding: 12px;
+            background: radial-gradient(ellipse 80% 60% at 10% -10%, rgba(58, 92, 240, .28), transparent), radial-gradient(ellipse 60% 50% at 95% 5%, rgba(123, 79, 255, .22), transparent), radial-gradient(ellipse 50% 70% at 60% 110%, rgba(0, 232, 200, .12), transparent), linear-gradient(160deg, #02040f 0%, #060b1e 50%, #02040f 100%);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background: repeating-linear-gradient(0deg, transparent, transparent 44px, rgba(120, 160, 255, .028) 44px, rgba(120, 160, 255, .028) 45px), repeating-linear-gradient(90deg, transparent, transparent 44px, rgba(120, 160, 255, .028) 44px, rgba(120, 160, 255, .028) 45px);
+            mask-image: radial-gradient(ellipse at 50% 30%, rgba(0, 0, 0, .6), transparent 72%);
+            z-index: 0;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: -25%;
+            pointer-events: none;
+            background: radial-gradient(circle at 20% 15%, rgba(58, 92, 240, .10), transparent 20%), radial-gradient(circle at 82% 20%, rgba(123, 79, 255, .08), transparent 18%), radial-gradient(circle at 65% 75%, rgba(0, 232, 200, .06), transparent 18%);
+            animation: zFloat 14s ease-in-out infinite alternate;
+            will-change: transform;
+            z-index: 0;
+        }
+
+        @keyframes zFloat {
+            from {
+                transform: translate3d(-12px, -8px, 0)
+            }
+
+            to {
+                transform: translate3d(12px, 10px, 0)
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(4, 8, 22, .8);
+            border-radius: 99px
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--z6), var(--zc5));
+            border-radius: 99px;
+            border: 2px solid rgba(4, 8, 22, .8)
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, var(--z7), var(--zc6))
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: transparent
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--z6) rgba(4, 8, 22, .8)
+        }
+
+        button,
+        input,
+        select {
+            font-family: 'Manrope', sans-serif
+        }
+
+        .zs {
+            position: relative;
+            z-index: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            gap: 10px
+        }
+
+        /* ── HERO ── */
+        .zh-hero {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--zn3);
+            border-radius: var(--r3);
+            background: radial-gradient(ellipse 70% 100% at 80% 50%, rgba(58, 92, 240, .18), transparent), radial-gradient(ellipse 40% 60% at 8% 80%, rgba(0, 232, 200, .10), transparent), linear-gradient(135deg, rgba(10, 18, 46, .97), rgba(5, 8, 22, .98));
+            box-shadow: 0 28px 100px rgba(0, 0, 0, .50), inset 0 1px 0 rgba(255, 255, 255, .05);
+            padding: 18px 24px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .zh-deco {
+            position: absolute;
+            right: -60px;
+            top: -120px;
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            border: 1px solid rgba(90, 140, 255, .10);
+            box-shadow: inset 0 0 80px rgba(90, 140, 255, .08);
+            pointer-events: none
+        }
+
+        .zh-deco::after {
+            content: "";
+            position: absolute;
+            inset: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(90, 140, 255, .07)
+        }
+
+        .zh-hex {
+            position: absolute;
+            right: 20px;
+            top: 12px;
+            opacity: .18;
+            pointer-events: none
+        }
+
+        .zk {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font: 700 11px 'Space Mono', monospace;
+            letter-spacing: 3px;
+            color: var(--zt0);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 232, 200, .5)
+        }
+
+        .zk::before {
+            content: "";
+            width: 28px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--zt0), transparent);
+            border-radius: 2px
+        }
+
+        .zt {
+            font-family: 'Syne', sans-serif;
+            font-size: 52px;
+            line-height: .92;
+            letter-spacing: -1px;
+            margin-bottom: 10px
+        }
+
+        .zt span {
+            background: linear-gradient(110deg, #fff 0%, #c2d8ff 30%, var(--z7) 60%, var(--zc6) 85%, var(--zm0) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 40px rgba(90, 140, 255, .25))
+        }
+
+        .zsub {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+            font-weight: 500;
+            max-width: 700px
+        }
+
+        .zh-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end
+        }
+
+        .zbadge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--zn2);
+            background: linear-gradient(135deg, rgba(12, 22, 52, .85), rgba(6, 10, 24, .90));
+            border-radius: var(--r2);
+            padding: 8px 14px;
+            font: 700 11px 'Space Mono', monospace;
+            letter-spacing: 1px;
+            color: var(--z8);
+            white-space: nowrap;
+            min-width: 130px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(255, 255, 255, .04);
+            transition: border-color .2s, box-shadow .2s
+        }
+
+        .zbdot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--z7);
+            box-shadow: 0 0 12px var(--z7);
+            flex-shrink: 0
+        }
+
+        .zbadge.zlive .zbdot {
+            background: var(--zt0);
+            box-shadow: 0 0 12px var(--zt0);
+            animation: zpulse 1.8s ease-in-out infinite
+        }
+
+        .zbadge.zlive {
+            color: var(--zt0);
+            border-color: rgba(0, 232, 200, .28)
+        }
+
+        .zbadge.zerr .zbdot {
+            background: var(--zr0);
+            box-shadow: 0 0 8px var(--zr0)
+        }
+
+        .zbadge.zerr {
+            color: var(--zr0);
+            border-color: rgba(230, 177, 65, .34)
+        }
+
+        .zbval {
+            font-size: 16px;
+            font-family: 'Syne', sans-serif;
+            color: var(--zb);
+            line-height: 1
+        }
+
+        @keyframes zpulse {
+            50% {
+                transform: scale(1.5);
+                opacity: .5
+            }
+        }
+
+        /* ── NAV — now 4 tabs ── */
+        .znav {
+            display: flex;
+            gap: 0;
+            background: rgba(4, 8, 22, .6);
+            border: 1px solid var(--zline);
+            border-radius: var(--r2);
+            padding: 6px;
+            width: max-content;
+            backdrop-filter: blur(10px);
+        }
+
+        .ztab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 40px;
+            padding: 0 18px;
+            border-radius: var(--r1);
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--muted);
+            font: 700 12px 'Manrope', sans-serif;
+            letter-spacing: .3px;
+            cursor: pointer;
+            transition: all .22s var(--easio);
+            white-space: nowrap
+        }
+
+        .ztab-ico {
+            width: 18px;
+            height: 18px;
+            opacity: .7;
+            transition: opacity .2s
+        }
+
+        .ztab:hover {
+            color: var(--text);
+            background: rgba(90, 140, 255, .08)
+        }
+
+        .ztab:hover .ztab-ico {
+            opacity: 1
+        }
+
+        .ztab.zact {
+            color: #fff;
+            border-color: rgba(90, 140, 255, .5);
+            background: linear-gradient(135deg, rgba(40, 80, 255, .9), rgba(30, 55, 180, .85));
+            box-shadow: 0 0 32px rgba(90, 140, 255, .28), inset 0 1px 0 rgba(255, 255, 255, .12)
+        }
+
+        .ztab.zact .ztab-ico {
+            opacity: 1
+        }
+
+        /* ── HOF tab gold accent ── */
+        .ztab[data-tab="hof"].zact {
+            background: linear-gradient(135deg, rgba(200, 140, 0, .9), rgba(140, 90, 0, .85));
+            border-color: rgba(255, 213, 56, .55);
+            box-shadow: 0 0 32px rgba(255, 213, 56, .22), inset 0 1px 0 rgba(255, 255, 255, .12);
+        }
+
+        .ztab[data-tab="hof"]:not(.zact):hover {
+            background: rgba(255, 213, 56, .07);
+            color: var(--zg0);
+        }
+
+        .ztab[data-tab="hof"]:not(.zact) .ztab-ico {
+            color: rgba(255, 213, 56, .7)
+        }
+
+        /* ── CONTROLS ── */
+        .zctrl {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            padding: 12px;
+            background: linear-gradient(180deg, rgba(8, 14, 36, .82), rgba(4, 8, 20, .75));
+            border: 1px solid var(--zline);
+            border-radius: var(--r2);
+            box-shadow: 0 16px 60px rgba(0, 0, 0, .24), inset 0 1px 0 rgba(255, 255, 255, .035);
+            backdrop-filter: blur(8px)
+        }
+
+        .zctrl-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .zinput {
+            flex: 1 1 240px;
+            min-width: 0;
+            height: 40px;
+            padding: 0 14px 0 42px;
+            border: 1px solid var(--zline);
+            border-radius: var(--r1);
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='%23f2bd4b' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") 14px center/16px 16px no-repeat, rgba(3, 7, 20, .75);
+            color: var(--text);
+            font-weight: 700;
+            font-size: 13px;
+            outline: none;
+            transition: border-color .18s, box-shadow .18s;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03)
+        }
+
+        .zinput::placeholder {
+            color: var(--muted2)
+        }
+
+        .zinput:focus {
+            border-color: rgba(90, 140, 255, .6);
+            box-shadow: 0 0 0 3px rgba(90, 140, 255, .12)
+        }
+
+        .zfchips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 2px 0
+        }
+
+        .zfchip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            height: 34px;
+            padding: 0 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(90, 140, 255, .22);
+            background: rgba(3, 7, 20, .75);
+            color: var(--muted);
+            font: 700 11px 'Space Mono', monospace;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all .2s var(--easio);
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden
+        }
+
+        .zfchip::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(90, 140, 255, .12), rgba(90, 140, 255, .04));
+            opacity: 0;
+            transition: opacity .2s
+        }
+
+        .zfchip:hover {
+            color: var(--z8);
+            border-color: rgba(90, 140, 255, .42)
+        }
+
+        .zfchip:hover::before {
+            opacity: 1
+        }
+
+        .zfchip.zfact {
+            color: #fff;
+            border-color: rgba(90, 140, 255, .6);
+            background: linear-gradient(135deg, rgba(40, 80, 255, .85), rgba(30, 55, 180, .8));
+            box-shadow: 0 0 20px rgba(90, 140, 255, .22), inset 0 1px 0 rgba(255, 255, 255, .12)
+        }
+
+        .zfchip.zfact::before {
+            opacity: 0
+        }
+
+        .zfchip-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: .7;
+            flex-shrink: 0
+        }
+
+        .zfchip.zfact .zfchip-dot {
+            opacity: 1;
+            background: var(--zt0);
+            box-shadow: 0 0 8px var(--zt0)
+        }
+
+        /* ── PODIUM ── */
+        .zpod-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1.06fr 1fr;
+            gap: 14px;
+            align-items: end;
+            min-width: 0
+        }
+
+        .zpod {
+            position: relative;
+            overflow: visible;
+            border: 1px solid var(--zline);
+            border-radius: var(--r3);
+            padding: 24px 20px 20px;
+            background: radial-gradient(ellipse 80% 60% at 10% 0%, rgba(90, 140, 255, .16), transparent), linear-gradient(160deg, rgba(10, 18, 46, .95), rgba(4, 8, 20, .98));
+            display: grid;
+            grid-template-rows: auto auto 1fr auto;
+            gap: 8px;
+            min-height: 180px;
+            box-shadow: 0 16px 60px rgba(0, 0, 0, .24);
+            transition: transform .28s var(--ease), box-shadow .28s var(--easio), border-color .22s;
+            min-width: 0
+        }
+
+        .zpod::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: var(--r3);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .04), transparent 60%);
+            pointer-events: none
+        }
+
+        .zpod::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 12px;
+            right: 12px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(90, 140, 255, .4), transparent);
+            border-radius: 2px
+        }
+
+        .zpod:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 0 40px rgba(90, 140, 255, .18), 0 28px 80px rgba(0, 0, 0, .34);
+            border-color: rgba(90, 140, 255, .32)
+        }
+
+        .zpod.zp1 {
+            border-color: rgba(255, 213, 56, .55);
+            background: radial-gradient(ellipse 90% 50% at 50% -10%, rgba(255, 213, 56, .22), transparent), radial-gradient(ellipse 60% 70% at 8% 8%, rgba(255, 180, 0, .14), transparent), linear-gradient(160deg, rgba(26, 20, 8, .96), rgba(4, 8, 20, .98));
+            box-shadow: 0 0 50px rgba(255, 213, 56, .14), 0 24px 80px rgba(0, 0, 0, .30);
+            min-height: 210px;
+            z-index: 2
+        }
+
+        .zpod.zp1::after {
+            background: linear-gradient(90deg, transparent, rgba(255, 213, 56, .85), transparent)
+        }
+
+        .zpod.zp1:hover {
+            box-shadow: 0 0 60px rgba(255, 213, 56, .22), 0 30px 90px rgba(0, 0, 0, .36);
+            border-color: rgba(255, 213, 56, .8)
+        }
+
+        .zpod.zp3 {
+            border-color: rgba(123, 79, 255, .45);
+            background: radial-gradient(ellipse 70% 60% at 8% 0%, rgba(123, 79, 255, .18), transparent), linear-gradient(160deg, rgba(16, 10, 36, .96), rgba(4, 8, 20, .98));
+            box-shadow: 0 0 38px rgba(123, 79, 255, .12), 0 18px 60px rgba(0, 0, 0, .26)
+        }
+
+        .zpod.zp3::after {
+            background: linear-gradient(90deg, transparent, rgba(123, 79, 255, .7), transparent)
+        }
+
+        .zpod.zp3:hover {
+            border-color: rgba(123, 79, 255, .7);
+            box-shadow: 0 0 50px rgba(123, 79, 255, .20), 0 28px 80px rgba(0, 0, 0, .34)
+        }
+
+        .zcrown-wrap {
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9
+        }
+
+        .zcrown-svg {
+            width: 52px;
+            height: auto;
+            filter: drop-shadow(0 0 16px rgba(255, 213, 56, .9));
+            animation: zcrownbob 3s ease-in-out infinite
+        }
+
+        @keyframes zcrownbob {
+            50% {
+                transform: translateY(-4px) scale(1.05)
+            }
+        }
+
+        .zpod-rank {
+            justify-self: start
+        }
+
+        .zrhex {
+            display: inline-block;
+            width: 68px;
+            height: 68px;
+            flex-shrink: 0
+        }
+
+        .zrhex svg {
+            width: 100%;
+            height: 100%
+        }
+
+        .zpod-score {
+            justify-self: end;
+            text-align: right;
+            margin-top: -4px
+        }
+
+        .zpnum {
+            font-family: 'Syne', sans-serif;
+            font-size: 52px;
+            line-height: .88;
+            color: var(--z7);
+            text-shadow: 0 0 24px rgba(90, 140, 255, .3)
+        }
+
+        .zpod.zp1 .zpnum {
+            color: var(--zg0);
+            text-shadow: 0 0 28px rgba(255, 213, 56, .35)
+        }
+
+        .zpod.zp3 .zpnum {
+            color: var(--zc7)
+        }
+
+        .zplbl {
+            font: 700 10px 'Space Mono', monospace;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin-top: 3px
+        }
+
+        .zpod.zp1 .zplbl {
+            color: rgba(255, 213, 56, .7)
+        }
+
+        .zpod.zp3 .zplbl {
+            color: rgba(165, 125, 255, .7)
+        }
+
+        .zpname {
+            font-family: 'Syne', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0
+        }
+
+        .zppills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+            align-self: end
+        }
+
+        /* ── TABLE ── */
+        .ztable-wrap {
+            border: 1px solid var(--zline);
+            border-radius: var(--r3);
+            background: linear-gradient(180deg, rgba(9, 16, 40, .95), rgba(4, 8, 20, .98));
+            overflow-x: auto;
+            overflow-y: hidden;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, .30), inset 0 1px 0 rgba(255, 255, 255, .04);
+            margin-top: 10px
+        }
+
+        .ztable {
+            display: grid
+        }
+
+        .zrow {
+            display: grid;
+            grid-template-columns: 60px minmax(0, 1.8fr) minmax(0, 1.1fr) minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 1.1fr) 72px;
+            gap: 0;
+            align-items: stretch;
+            min-height: 68px;
+            padding: 0 12px;
+            border-bottom: 1px solid var(--zline2);
+            transition: background .16s var(--easio);
+            contain: layout style
+        }
+
+        .zrow.zrs {
+            grid-template-columns: 60px minmax(0, 1.8fr) minmax(0, 1.2fr) minmax(0, 1.4fr) 72px;
+            align-items: stretch;
+            contain: layout style
+        }
+
+        /* ── HOF table row — Rank | Player | Points (3 cols) ── */
+        .zrow.zhof {
+            grid-template-columns: 60px minmax(0, 1fr) 120px !important;
+            contain: layout style;
+        }
+
+        .zrow:not(.zrh):hover {
+            background: linear-gradient(90deg, rgba(90, 140, 255, .08), rgba(90, 140, 255, .02))
+        }
+
+        .zrow.zrh {
+            min-height: 52px;
+            background: linear-gradient(180deg, rgba(10, 20, 50, .97), rgba(7, 13, 32, .97));
+            font: 700 11px 'Space Mono', monospace;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--z7);
+            position: sticky;
+            top: 0;
+            z-index: 3
+        }
+
+        /* gold header for HOF */
+        .zrow.zhof.zrh {
+            color: var(--zg0)
+        }
+
+        .zrow>span {
+            height: auto;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px 16px
+        }
+
+        .zrow>span:not(:last-child) {
+            border-right: 1px solid rgba(120, 160, 255, .10)
+        }
+
+        .zrow.zrh>span:not(:last-child) {
+            border-right: 1px solid rgba(120, 160, 255, .07)
+        }
+
+        .zrrank {
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .zrrank svg {
+            width: 58px;
+            height: 58px;
+            flex-shrink: 0
+        }
+
+        .zrplayer {
+            display: grid;
+            gap: 3px;
+            justify-items: center;
+            text-align: center;
+            padding: 12px 18px !important
+        }
+
+        .zrplayer b {
+            font-size: 19px;
+            font-weight: 800;
+            line-height: 1.15;
+            color: #eef6ff;
+            word-break: break-word;
+            white-space: normal
+        }
+
+        .zrcell {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 6px !important;
+            justify-content: center !important;
+            align-items: center !important;
+            align-content: center !important;
+            text-align: center !important;
+            overflow: visible !important;
+            padding: 10px 12px !important;
+            white-space: normal !important;
+            height: auto !important;
+            min-height: 52px !important
+        }
+
+        .zrtotal {
+            font-family: 'Syne', sans-serif;
+            font-size: 34px;
+            font-weight: 700;
+            color: var(--z8)
+        }
+
+        .zrow:nth-child(2) .zrtotal {
+            color: var(--zg0)
+        }
+
+        .zrow:nth-child(3) .zrtotal {
+            color: var(--z7)
+        }
+
+        .zrow:nth-child(4) .zrtotal {
+            color: var(--zc7)
+        }
+
+        .zempty,
+        .zloading {
+            padding: 44px;
+            text-align: center;
+            color: var(--muted);
+            font: 700 13px 'Space Mono', monospace;
+            letter-spacing: .5px
+        }
+
+        .zrteam {
+            font: 700 10px 'Space Mono', monospace;
+            letter-spacing: .5px;
+            color: var(--muted);
+            margin-top: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            opacity: .8
+        }
+
+        /* ── HOF entry section header ── */
+        .zhof-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid rgba(255, 213, 56, .12);
+        }
+
+        .zhof-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 213, 56, .22), rgba(200, 140, 0, .08));
+            border: 1px solid rgba(255, 213, 56, .38);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(255, 213, 56, .18);
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .zhof-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--zg0)
+        }
+
+        .zhof-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px;
+            letter-spacing: .3px
+        }
+
+        .zhof-count {
+            margin-left: auto;
+            font: 700 11px 'Space Mono', monospace;
+            letter-spacing: 1px;
+            color: var(--muted);
+            background: rgba(255, 213, 56, .07);
+            border: 1px solid rgba(255, 213, 56, .16);
+            border-radius: 999px;
+            padding: 4px 12px;
+        }
+
+        /* ── PILLS ── */
+        .zpill {
+            --pc1: var(--z7);
+            --pc2: var(--z6);
+            --pfg: var(--za);
+            --prim: rgba(90, 140, 255, .28);
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            min-height: 28px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--prim);
+            background: linear-gradient(135deg, color-mix(in srgb, var(--pc1) 20%, transparent), color-mix(in srgb, var(--pc2) 15%, transparent)), rgba(0, 0, 0, .12);
+            color: var(--pfg);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 0 14px color-mix(in srgb, var(--pc2) 22%, transparent);
+            font: 800 11.5px 'Space Mono', monospace;
+            letter-spacing: .2px;
+            line-height: 1;
+            white-space: nowrap;
+            vertical-align: middle
+        }
+
+        .zpill small {
+            display: inline-block;
+            font: 700 9px 'Space Mono', monospace;
+            opacity: .72;
+            letter-spacing: .8px;
+            line-height: 1
+        }
+
+        .zpill.znil {
+            opacity: .32;
+            background: transparent;
+            border-color: rgba(120, 160, 255, .10);
+            box-shadow: none;
+            color: var(--muted2)
+        }
+
+        .zpill.zplibero {
+            --pc1: #f4cb72;
+            --pc2: #e6ad2e;
+            --pfg: #fff2d4;
+            --prim: rgba(230, 177, 65, .34)
+        }
+
+        .zpill.zpspiker {
+            --pc1: #e5a52b;
+            --pc2: #c98912;
+            --pfg: #fff0cc;
+            --prim: rgba(230, 177, 65, .34)
+        }
+
+        .zpill.zpds {
+            --pc1: #79c5ff;
+            --pc2: #327cff;
+            --pfg: #e1f1ff;
+            --prim: rgba(50, 124, 255, .28)
+        }
+
+        .zpill.zpsetter {
+            --pc1: #65ffb0;
+            --pc2: #10b86a;
+            --pfg: #ddffef;
+            --prim: rgba(16, 184, 106, .28)
+        }
+
+        .zpill.zpchamp {
+            --pc1: #a5d9ff;
+            --pc2: #4f8cff;
+            --pfg: #eaf7ff;
+            --prim: rgba(79, 140, 255, .28)
+        }
+
+        .zpill.zps1 {
+            --pc1: #9be7ff;
+            --pc2: #38bdf8;
+            --pfg: #e7fbff;
+            --prim: rgba(56, 189, 248, .28)
+        }
+
+        .zpill.zps2 {
+            --pc1: #73ffb5;
+            --pc2: #21c46c;
+            --pfg: #eafff4;
+            --prim: rgba(33, 196, 108, .28)
+        }
+
+        .zpill.zps3 {
+            --pc1: #c084fc;
+            --pc2: #7c3aed;
+            --pfg: #f0e5ff;
+            --prim: rgba(124, 58, 237, .28)
+        }
+
+        .zpill.zps4 {
+            --pc1: #f3c85c;
+            --pc2: #e2a927;
+            --pfg: #fff1d4;
+            --prim: rgba(230, 177, 65, .34)
+        }
+
+        .zpill.zps5 {
+            --pc1: #e5b8ff;
+            --pc2: #a855f7;
+            --pfg: #f6e8ff;
+            --prim: rgba(168, 85, 247, .28)
+        }
+
+        .zpill.zps6 {
+            --pc1: #79fff2;
+            --pc2: #08c6d6;
+            --pfg: #e6fffd;
+            --prim: rgba(8, 198, 214, .28)
+        }
+
+        .zpill.zpleaguemvp {
+            --pc1: #fff29a;
+            --pc2: #e6a800;
+            --pfg: #fff7c7;
+            --prim: rgba(255, 184, 0, .35)
+        }
+
+        .zpill.zpallstar {
+            --pc1: #c58a5a;
+            --pc2: #7a431f;
+            --pfg: #ffe8d0;
+            --prim: rgba(122, 67, 31, .32)
+        }
+
+        .zpill.zpfinalmvp {
+            --pc1: #ffffff;
+            --pc2: #b7c7e8;
+            --pfg: #ffffff;
+            --prim: rgba(200, 220, 255, .35)
+        }
+
+        .zpill.zpsemifinalmvp {
+            --pc1: #d6c4ff;
+            --pc2: #8b5cf6;
+            --pfg: #f0eaff;
+            --prim: rgba(139, 92, 246, .30)
+        }
+
+        .zpill.zpmop {
+            --pc1: #f2c45e;
+            --pc2: #e6a800;
+            --pfg: #fff0e0;
+            --prim: rgba(255, 106, 0, .30)
+        }
+
+        .zpill.zpmdp {
+            --pc1: #5af0ff;
+            --pc2: #00b8d9;
+            --pfg: #e0fbff;
+            --prim: rgba(0, 184, 217, .30)
+        }
+
+        .zpill.zpmvp {
+            --pc1: #fff29a;
+            --pc2: #e6a800;
+            --pfg: #fff7c7;
+            --prim: rgba(255, 184, 0, .35)
+        }
+
+        .zpill.zppotw {
+            --pc1: #ffe1a0;
+            --pc2: #f0c45a;
+            --pfg: #fff2d4;
+            --prim: rgba(230, 177, 65, .34)
+        }
+
+        .zpill:hover {
+            transform: scale(1.08) !important;
+            z-index: 20 !important
+        }
+
+        .zqty {
+            display: inline;
+            font: 800 11.5px 'Space Mono', monospace;
+            letter-spacing: .2px;
+            line-height: 1;
+            vertical-align: middle
+        }
+
+        .zqty.zq1 {
+            background: linear-gradient(180deg, #fff, #cbd7e8 55%, #8898ad);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 6px rgba(200, 215, 235, .5))
+        }
+
+        .zqty.zq2 {
+            background: linear-gradient(180deg, #fff8ad, #ffe13b 55%, #c89600);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 8px rgba(255, 225, 59, .4))
+        }
+
+        .zqty.zq3 {
+            background: linear-gradient(180deg, #ffd6a1, #e6a800 55%, #bb4500);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(255, 138, 36, .45))
+        }
+
+        .zqty.zq4 {
+            background: linear-gradient(180deg, #e8d6ff, #8b5cf6 52%, #2a0d6e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 12px rgba(139, 92, 246, .55))
+        }
+
+        .zach {
+            display: inline;
+            color: var(--pfg);
+            font: 800 11.5px 'Space Mono', monospace;
+            line-height: 1;
+            vertical-align: middle
+        }
+
+        .zfooter {
+            text-align: center;
+            font: 700 11px 'Space Mono', monospace;
+            letter-spacing: 1.5px;
+            color: var(--muted2);
+            padding: 10px;
+            opacity: .6
+        }
+
+        .zview-enter {
+            animation: zviewin .32s var(--ease) both
+        }
+
+        @keyframes zviewin {
+            from {
+                opacity: 0;
+                transform: translateY(12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .zhide {
+            display: none !important
+        }
+
+        /* ── REFINED LAYOUT ── */
+        .zpnum,
+        .zrtotal,
+        .zbval,
+        .zrhex text,
+        .zrrank svg text {
+            font-family: 'Oxanium', 'Space Mono', monospace !important;
+            font-weight: 800 !important;
+            letter-spacing: .2px !important
+        }
+
+        .zpname,
+        .zrplayer b {
+            font-family: 'Manrope', sans-serif !important;
+            letter-spacing: -.25px !important
+        }
+
+        .zpod {
+            min-height: 130px !important;
+            padding: 16px 18px 14px !important;
+            display: grid !important;
+            grid-template-columns: 60px minmax(0, 1fr) auto !important;
+            grid-template-rows: auto 1fr auto !important;
+            gap: 6px 12px !important;
+            align-items: center !important
+        }
+
+        .zpod.zp1 {
+            min-height: 144px !important
+        }
+
+        .zpod-rank {
+            grid-column: 1 !important;
+            grid-row: 1 !important;
+            align-self: start !important;
+            justify-self: start !important
+        }
+
+        .zpod-score {
+            grid-column: 3 !important;
+            grid-row: 1 !important;
+            align-self: start !important;
+            justify-self: end !important;
+            margin: 0 !important
+        }
+
+        .zpname {
+            grid-column: 1 / -1 !important;
+            grid-row: 2 !important;
+            align-self: center !important;
+            justify-self: start !important;
+            max-width: 100% !important;
+            font-size: 20px !important;
+            line-height: 1.08 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important
+        }
+
+        .zpnum {
+            font-size: 36px !important;
+            line-height: .88 !important
+        }
+
+        .zplbl {
+            font-size: 9px !important;
+            letter-spacing: 1.2px !important
+        }
+
+        .zrhex {
+            width: 44px !important;
+            height: 44px !important
+        }
+
+        .zppills {
+            grid-column: 1 / -1 !important;
+            grid-row: 3 !important;
+            margin-top: 2px !important;
+            align-self: end !important;
+            justify-content: flex-start !important;
+            max-height: 54px !important;
+            overflow: visible !important
+        }
+
+        .zcrown-wrap {
+            top: -14px !important
+        }
+
+        .zcrown-svg {
+            width: 36px !important
+        }
+
+        .zrow {
+            grid-template-columns: 60px minmax(0, 1.8fr) minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr) 72px !important;
+            min-height: 68px !important;
+            padding: 0 12px !important
+        }
+
+        .zrow.zrs {
+            grid-template-columns: 60px minmax(0, 1.8fr) minmax(0, 1.2fr) minmax(0, 1.4fr) 72px !important;
+            min-height: 68px !important
+        }
+
+        .zrow.zrh {
+            min-height: 40px !important
+        }
+
+        .zrow>span {
+            padding: 6px 10px !important
+        }
+
+        .zrrank svg {
+            width: 40px !important;
+            height: 40px !important
+        }
+
+        .zrplayer {
+            padding: 8px 12px !important;
+            justify-items: center !important;
+            align-content: center !important;
+            overflow: hidden !important
+        }
+
+        .zrplayer b {
+            font-size: 17px !important;
+            line-height: 1.15 !important;
+            max-width: 100% !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            word-break: normal !important
+        }
+
+        .zrcell {
+            padding: 8px 10px !important;
+            gap: 6px !important;
+            min-height: 46px !important;
+            align-content: center !important;
+            overflow: visible !important
+        }
+
+        .zpill {
+            min-height: 25px !important;
+            padding: 5px 10px !important;
+            font-size: 10.5px !important;
+            line-height: 1 !important
+        }
+
+        .zqty,
+        .zach {
+            font-size: 10.5px !important
+        }
+
+        .zrtotal {
+            font-size: 30px !important
+        }
+
+        .zrow>span:not(:last-child) {
+            border-right: 1px solid rgba(120, 160, 255, .135) !important
+        }
+
+        .zrow.zrh>span:not(:last-child) {
+            border-right: 1px solid rgba(120, 160, 255, .09) !important
+        }
+
+        /* ── MVP S9 ── */
+        .zrow.zmvp {
+            grid-template-columns: 60px minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 78px !important;
+            min-height: 68px !important
+        }
+
+        /* ── RESPONSIVE ── */
+        @media(max-width:1200px) {
+            .zh-hero {
+                grid-template-columns: 1fr;
+                padding: 16px 20px
+            }
+
+            .zh-stats {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: flex-start;
+                gap: 8px
+            }
+
+            .zbadge {
+                min-width: unset
+            }
+
+            .zpod-wrap {
+                grid-template-columns: 1fr 1.08fr 1fr
+            }
+
+            .zpod.zp1 {
+                min-height: 144px !important
+            }
+
+            .zt {
+                font-size: 44px
+            }
+        }
+
+        @media(max-width:1100px) {
+            .zpod-wrap {
+                grid-template-columns: 1fr
+            }
+
+            .zpod.zp1 {
+                order: -1;
+                min-height: 130px !important
+            }
+
+            .zpod:hover,
+            .zpod.zp1:hover {
+                transform: none
+            }
+
+            .znav {
+                width: 100% !important;
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important
+            }
+        }
+
+        @media(max-width:760px) {
+            body {
+                padding: 12px
+            }
+
+            .zt {
+                font-size: 56px
+            }
+
+            .zrow,
+            .zrow.zrs,
+            .zrow.zhof {
+                grid-template-columns: 64px 1.8fr 82px !important;
+                min-height: 74px
+            }
+
+            .zrow>span:nth-child(3),
+            .zrow>span:nth-child(4),
+            .zrow>span:nth-child(5),
+            .zrow>span:nth-child(6),
+            .zrow>span:nth-child(7),
+            .zrow>span:nth-child(8) {
+                display: none
+            }
+
+            .zrow.zhof>span:nth-child(3) {
+                display: flex !important
+            }
+
+            .zrow>span {
+                border-right: 0 !important
+            }
+
+            .zrtotal {
+                font-size: 28px
+            }
+
+            .zrplayer b {
+                font-size: 14px
+            }
+
+            .zrcell {
+                padding: 4px 6px !important
+            }
+
+            .zh-hero {
+                padding: 18px 16px
+            }
+
+            .zrrank svg {
+                width: 46px;
+                height: 46px
+            }
+
+            .znav {
+                grid-template-columns: 1fr 1fr !important
+            }
+
+            .zrow.zmvp {
+                grid-template-columns: 58px minmax(0, 1fr) 78px !important;
+                min-height: 68px !important
+            }
+
+            .zrow.zmvp>span:nth-child(3),
+            .zrow.zmvp>span:nth-child(4),
+            .zrow.zmvp>span:nth-child(5),
+            .zrow.zmvp>span:nth-child(6),
+            .zrow.zmvp>span:nth-child(7),
+            .zrow.zmvp>span:nth-child(8) {
+                display: none
+            }
+        }
+
+        /* Responsive layout retained for Season 11. */
+
+        @media(min-width:1700px) {
+            .zs {
+                max-width: 1840px
+            }
+
+            .zt {
+                font-size: 64px
+            }
+
+            .zrow {
+                min-height: 74px !important
+            }
+
+            .zrplayer b {
+                font-size: 18px !important
+            }
+
+            .zpod-wrap {
+                gap: 18px
+            }
+
+            .zh-hero {
+                padding: 24px 30px
+            }
+        }
+
+        @media(max-width:900px) {
+            .zh-hero {
+                grid-template-columns: 1fr !important
+            }
+
+            .znav {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                width: 100% !important
+            }
+
+            .ztab {
+                justify-content: center;
+                padding: 0 10px
+            }
+
+            .zctrl-row {
+                display: block
+            }
+
+            .zt {
+                font-size: 42px !important;
+                line-height: .95
+            }
+
+            .zsub {
+                font-size: 13px
+            }
+
+            .zh-stats {
+                align-items: stretch
+            }
+
+            .zbadge {
+                justify-content: center
+            }
+        }
+
+        @media(max-width:640px) {
+            body {
+                padding: 8px
+            }
+
+            .zs {
+                gap: 8px
+            }
+
+            .zh-hero {
+                border-radius: 18px;
+                padding: 16px 12px
+            }
+
+            .zt {
+                font-size: 34px !important
+            }
+
+            .zk {
+                font-size: 10px;
+                letter-spacing: 2px
+            }
+
+            .znav {
+                grid-template-columns: 1fr !important;
+                padding: 5px
+            }
+
+            .ztab {
+                height: 38px;
+                font-size: 11px
+            }
+
+            .zctrl {
+                padding: 10px
+            }
+
+            .zfchips {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 4px
+            }
+
+            .zfchip {
+                flex: 0 0 auto
+            }
+
+            .ztable-wrap {
+                border-radius: 16px
+            }
+
+            .zrow,
+            .zrow.zrs,
+            .zrow.zmvp,
+            .zrow.zhof {
+                grid-template-columns: 52px minmax(0, 1fr) 78px !important;
+                padding: 0 6px !important;
+                min-width: 0 !important
+            }
+
+            .zrow>span {
+                padding: 6px 5px !important
+            }
+
+            .zrrank svg {
+                width: 38px !important;
+                height: 38px !important
+            }
+
+            .zrplayer b {
+                font-size: 13px !important
+            }
+
+            .zrtotal {
+                font-size: 24px !important
+            }
+
+            .zfooter {
+                font-size: 9px;
+                padding: 8px 4px
+            }
+
+            .zhof-header {
+                padding: 14px;
+                gap: 10px
+            }
+
+            .zhof-count {
+                display: none
+            }
+        }
+/* ─────────────────────────────────────────────────────────────
+   MLV MVP SEASON 11 — PURE GOLD / AMBER THEME
+   No crimson, red, pink, or Season X styling is used in this page.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --z0:#080704; --z1:#100d06; --z2:#191207; --z3:#241a08;
+  --z4:#34240a; --z5:#50330a; --z6:#c58a16; --z7:#e0aa32;
+  --z8:#f5cf78; --z9:#ffe7ae; --za:#fff4d8; --zb:#fffdf7;
+  --zc0:#090704; --zc1:#171006; --zc2:#241706; --zc3:#392407;
+  --zc4:#563607; --zc5:#85530b; --zc6:#b87910; --zc7:#e2ad3d; --zc8:#f7d98e;
+  --zg0:#ffe2a0; --zg1:#f4bd4c; --zg2:#bd7b0c;
+  --zr0:#e0a32b; --zr1:#f2c65f;
+  --zt0:#f4c45b; --zt1:#ffe7a8;
+  --zm0:#d99a24; --zm1:#f5d17a;
+  --zn0:rgba(217,154,36,.06); --zn1:rgba(217,154,36,.11);
+  --zn2:rgba(217,154,36,.20); --zn3:rgba(217,154,36,.34);
+  --zline:rgba(230,177,65,.18); --zline2:rgba(230,177,65,.09);
+  --text:#fff0cf; --muted:#c9ad72; --muted2:#80652f;
+}
+
+html, body { background-color:#080704 !important; }
+body {
+  background:
+    radial-gradient(ellipse 76% 56% at 12% -8%,rgba(225,166,45,.19),transparent 66%),
+    radial-gradient(ellipse 60% 52% at 95% 10%,rgba(169,111,20,.15),transparent 66%),
+    radial-gradient(ellipse 55% 68% at 55% 112%,rgba(255,205,93,.09),transparent 66%),
+    linear-gradient(155deg,#090805 0%,#171106 48%,#050504 100%) !important;
+}
+body::before {
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 48px,rgba(232,184,82,.025) 48px,rgba(232,184,82,.025) 49px),
+    repeating-linear-gradient(90deg,transparent,transparent 48px,rgba(232,184,82,.022) 48px,rgba(232,184,82,.022) 49px) !important;
+  mask-image:radial-gradient(ellipse at 50% 30%,rgba(0,0,0,.62),transparent 74%);
+}
+body::after {
+  background:
+    radial-gradient(circle at 20% 15%,rgba(245,190,75,.11),transparent 21%),
+    radial-gradient(circle at 82% 20%,rgba(192,129,25,.09),transparent 19%),
+    radial-gradient(circle at 65% 75%,rgba(255,218,133,.07),transparent 19%) !important;
+}
+
+.zh-hero {
+  border-color:rgba(230,177,65,.42) !important;
+  background:
+    radial-gradient(ellipse 78% 90% at 78% 45%,rgba(255,194,66,.20),transparent 61%),
+    radial-gradient(ellipse 46% 68% at 8% 82%,rgba(192,129,25,.15),transparent 66%),
+    linear-gradient(135deg,rgba(39,27,8,.98),rgba(12,10,5,.99)) !important;
+  box-shadow:0 28px 100px rgba(0,0,0,.56),inset 0 1px 0 rgba(255,230,170,.12),0 0 38px rgba(230,177,65,.07) !important;
+}
+.zh-deco,.zh-deco::after {
+  border-color:rgba(245,195,84,.20) !important;
+  box-shadow:inset 0 0 90px rgba(230,177,65,.12) !important;
+}
+.zh-hex { opacity:.78 !important; filter:drop-shadow(0 0 16px rgba(234,177,65,.20)); }
+.zk { color:#f4c45b !important; text-shadow:0 0 20px rgba(230,168,0,.32) !important; }
+.zk::before { background:linear-gradient(90deg,#f4c45b,transparent) !important; }
+.zt span {
+  background:linear-gradient(110deg,#fff9e9 0%,#ffe8b0 25%,#f5c85e 55%,#d99a24 82%,#fff2cf 100%) !important;
+  -webkit-background-clip:text !important; background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;
+  filter:drop-shadow(0 0 34px rgba(230,168,0,.23)) !important;
+}
+.zbadge { border-color:rgba(230,177,65,.20) !important; color:#f2d28a !important; }
+.zbdot { background:#e0aa32 !important; box-shadow:0 0 12px #e0aa32 !important; }
+.zbadge.zlive { color:#f5cf78 !important; border-color:rgba(230,177,65,.34) !important; }
+.zbadge.zlive .zbdot { background:#f4c45b !important; box-shadow:0 0 12px #f4c45b !important; }
+.zbadge.zerr,.zbadge.zerr .zbdot { color:#f2c65f !important; border-color:rgba(230,177,65,.34) !important; background-color:transparent !important; }
+.zbadge.zerr .zbdot { background:#e0aa32 !important; box-shadow:0 0 10px #e0aa32 !important; }
+.znav { border-color:rgba(230,177,65,.22) !important; }
+.ztab:hover { background:rgba(217,154,36,.10) !important; color:#ffe8b0 !important; }
+.ztab.zact {
+  background:linear-gradient(135deg,rgba(201,139,22,.96),rgba(119,75,10,.92)) !important;
+  color:#fff4d8 !important; border-color:rgba(255,222,145,.72) !important;
+  box-shadow:0 0 30px rgba(217,154,36,.26),inset 0 1px 0 rgba(255,255,255,.15) !important;
+}
+.zctrl { background:linear-gradient(180deg,rgba(27,20,8,.88),rgba(10,8,4,.82)) !important; border-color:rgba(230,177,65,.18) !important; }
+.zinput {
+  border-color:rgba(230,177,65,.27) !important;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='%23f2bd4b' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") 14px center/16px 16px no-repeat,rgba(10,8,4,.84) !important;
+}
+.zinput:focus { border-color:rgba(245,195,84,.65) !important; box-shadow:0 0 0 3px rgba(217,154,36,.14) !important; }
+.ztable-wrap { background:linear-gradient(180deg,rgba(34,25,9,.97),rgba(9,7,4,.99)) !important; border-color:rgba(230,177,65,.20) !important; }
+.zrow.zrh { background:linear-gradient(180deg,rgba(67,47,12,.98),rgba(34,24,7,.98)) !important; color:#f5d17a !important; }
+.zrow.zrh>span:not(:last-child),.zrow>span:not(:last-child) { border-color:rgba(230,177,65,.10) !important; }
+.zrow:not(.zrh):hover { background:linear-gradient(90deg,rgba(217,154,36,.12),rgba(245,190,75,.035)) !important; }
+.zrow .zrtotal,.zpnum { color:#f5cf78 !important; }
+.zrow:nth-child(2) .zrtotal,.zpod.zp1 .zpnum { color:#ffe2a0 !important; }
+.zrow:nth-child(3) .zrtotal { color:#f2c65f !important; }
+.zrow:nth-child(4) .zrtotal,.zpod.zp3 .zpnum { color:#d99a24 !important; }
+.zpod,.zpod.zp3 {
+  background:radial-gradient(ellipse 78% 60% at 10% 0%,rgba(217,154,36,.16),transparent),linear-gradient(160deg,rgba(35,25,8,.97),rgba(9,7,4,.99)) !important;
+  border-color:rgba(230,177,65,.27) !important;
+  box-shadow:0 18px 60px rgba(0,0,0,.28),0 0 28px rgba(217,154,36,.07) !important;
+}
+.zpod::after,.zpod.zp3::after { background:linear-gradient(90deg,transparent,rgba(245,195,84,.72),transparent) !important; }
+.zpod:hover,.zpod.zp3:hover { border-color:rgba(245,195,84,.55) !important; box-shadow:0 0 48px rgba(217,154,36,.17),0 28px 80px rgba(0,0,0,.34) !important; }
+.zpod.zp1 { border-color:rgba(255,220,120,.62) !important; background:radial-gradient(ellipse 90% 52% at 50% -10%,rgba(255,213,86,.22),transparent),linear-gradient(160deg,rgba(48,34,9,.98),rgba(10,8,4,.99)) !important; }
+.zpill { --pc1:#e3b34f; --pc2:#a96e12; --pfg:#fff2cf; --prim:rgba(230,177,65,.32); }
+.zpill.znil { color:#806b42 !important; border-color:rgba(230,177,65,.12) !important; }
+.zpill.zplibero,.zpill.zpspiker,.zpill.zps4,.zpill.zppotw,.zpill.zpmop {
+  --pc1:#f1ca70; --pc2:#bd7d18; --pfg:#fff4d8; --prim:rgba(230,177,65,.34);
+}
+.zpill.zpds,.zpill.zpchamp,.zpill.zps1,.zpill.zps2,.zpill.zps3,.zpill.zps5,.zpill.zps6,.zpill.zpsetter,.zpill.zpmdp,.zpill.zps {
+  --pc1:#e5bd68; --pc2:#a9781d; --pfg:#fff3d5; --prim:rgba(230,177,65,.30);
+}
+.zpill.zpallstar,.zpill.zpfinalmvp,.zpill.zpsemifinalmvp,.zpill.zpleaguemvp,.zpill.zpmvp,.zpill.zpt,.zpill.zpk,.zpill.zpotw {
+  --pc1:#ffe3a0; --pc2:#d49a2d; --pfg:#fff7e6; --prim:rgba(245,195,84,.36);
+}
+.zpill:hover { filter:brightness(1.08); }
+.zrrank svg polygon,.zrhex svg polygon { fill:rgba(217,154,36,.13) !important; stroke:rgba(245,195,84,.68) !important; }
+.zrrank svg text,.zrhex svg text { fill:#f5d17a !important; }
+.zfooter { color:#8b713b !important; }
+::-webkit-scrollbar-track { background:rgba(10,8,4,.9) !important; }
+::-webkit-scrollbar-thumb { background:linear-gradient(180deg,#e0aa32,#9a6410) !important; border-color:rgba(10,8,4,.9) !important; }
+* { scrollbar-color:#c58a16 rgba(10,8,4,.9) !important; }
+
+/* New decorative SVG: crown and laurel wreath in gold. No X, cross, or graffiti mark. */
+</style>
+</head>
+<body>
+<div class="zs">
+<header class="zh-hero">
+  <div class="zh-deco"></div>
+  <svg class="zh-hex" width="340" height="220" viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="s11Gold" x1="60" y1="20" x2="280" y2="200" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#FFF0B8"/><stop offset=".48" stop-color="#E6B34A"/><stop offset="1" stop-color="#9D6815"/>
+      </linearGradient>
+      <radialGradient id="s11Glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(170 112) rotate(90) scale(96 130)">
+        <stop stop-color="#E9B84E" stop-opacity=".24"/><stop offset="1" stop-color="#E9B84E" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="170" cy="112" rx="132" ry="89" fill="url(#s11Glow)"/>
+    <g stroke="url(#s11Gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".82">
+      <path d="M82 169C47 146 42 102 57 66C63 51 73 39 86 29"/>
+      <path d="M258 169C293 146 298 102 283 66C277 51 267 39 254 29"/>
+      <path d="M78 157C61 153 51 143 45 129M69 137C54 128 48 115 47 101M66 111C57 99 57 84 62 72M82 83C74 69 77 53 88 42"/>
+      <path d="M262 157C279 153 289 143 295 129M271 137C286 128 292 115 293 101M274 111C283 99 283 84 278 72M258 83C266 69 263 53 252 42"/>
+      <path d="M78 157C88 143 91 128 88 112M69 137C82 125 87 110 84 94M66 111C78 98 81 84 76 68M82 83C93 73 98 60 94 47"/>
+      <path d="M262 157C252 143 249 128 252 112M271 137C258 125 253 110 256 94M274 111C262 98 259 84 264 68M258 83C247 73 242 60 246 47"/>
+      <path d="M99 165C121 177 143 182 170 182C197 182 219 177 241 165" opacity=".58"/>
+      <path d="M116 88L127 55L151 77L170 34L189 77L213 55L224 88L216 126H124L116 88Z" fill="rgba(224,170,50,.10)"/>
+      <path d="M124 126H216L211 145H129L124 126Z" fill="rgba(224,170,50,.12)"/>
+      <path d="M135 145V153H205V145"/>
+      <path d="M127 102H213" opacity=".52"/>
+    </g>
+    <g fill="#FFE6A1" stroke="#C28A24" stroke-width="1">
+      <circle cx="151" cy="77" r="4.2"/><circle cx="170" cy="34" r="5"/><circle cx="189" cy="77" r="4.2"/>
+      <path d="M170 8L173.5 18.5L184 22L173.5 25.5L170 36L166.5 25.5L156 22L166.5 18.5L170 8Z"/>
+      <path d="M104 48L106 54L112 56L106 58L104 64L102 58L96 56L102 54L104 48Z"/>
+      <path d="M236 48L238 54L244 56L238 58L236 64L234 58L228 56L234 54L236 48Z"/>
+    </g>
+    <g fill="#DCA63A" opacity=".8"><circle cx="106" cy="181" r="2.5"/><circle cx="234" cy="181" r="2.5"/><circle cx="48" cy="87" r="2"/><circle cx="292" cy="87" r="2"/></g>
+  </svg>
+  <div><div class="zk">MLV Information</div><h1 class="zt"><span>MLV MVP Season 11</span></h1><p class="zsub">MLV MVP Season 11 · Season leaderboard and player points.</p></div>
+  <div class="zh-stats"><div class="zbadge" id="zsync"><div class="zbdot"></div><span>SYNCING</span></div><div class="zbadge"><span class="zbval" id="ztotal">0</span><span>PLAYERS</span></div><div class="zbadge"><span>🏆</span><span>MVP LEADERBOARD</span></div></div>
+</header>
+<nav class="znav"><button class="ztab zact" data-tab="mvp"><svg class="ztab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 15.1 8.4 22 9.4l-5 4.9 1.2 6.9L12 17.9 5.8 21.2 7 14.3 2 9.4l6.9-1L12 2Z"/></svg>MLV MVP Season 11</button></nav>
+<section class="zctrl"><input class="zinput" id="zsearch" placeholder="Search player or team…" /></section>
+<section class="ztable-wrap"><div class="ztable" id="mvpTable"><div class="zloading">Loading MLV MVP Season 11…</div></div></section>
+<footer class="zfooter">Made by Fuas · MLV MVP Season 11 · 2026</footer>
+</div>
+<script>
+  // Endpoint exclusivo de la temporada mostrada.
+  const MVP_API_URL = "PASTE_S11_WEB_APP_URL_HERE";
+  const MVP_SEASON = "11";
+  const $ = id => document.getElementById(id);
+  const clean = v => String(v ?? '').trim();
+  const pick = (obj, keys) => { for (const key of keys) if (obj[key] != null && clean(obj[key])) return obj[key]; return ''; };
+  const esc = value => clean(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function normalizePlayer(row) {
+    return {
+      name: clean(pick(row, ['name','player','players','Player','Players','PLAYER','PLAYERS','PLAYER NAME'])),
+      team: clean(pick(row, ['team','Team','TEAM','teams','TEAMS'])),
+      top1: clean(pick(row, ['top1','TOP1','Top 1','top 1','TOP 1'])),
+      top2: clean(pick(row, ['top2','TOP2','Top 2','top 2','TOP 2'])),
+      top3: clean(pick(row, ['top3','TOP3','Top 3','top 3','TOP 3'])),
+      top4: clean(pick(row, ['top4','TOP4','Top 4','top 4','TOP 4'])),
+      top5: clean(pick(row, ['top5','TOP5','Top 5','top 5','TOP 5'])),
+      potw: clean(pick(row, ['potw','POTW','Player of the Week','PLAYER OF THE WEEK','Player of Week'])),
+      points: Number(pick(row, ['points','Points','POINTS','Total Points','TOTAL POINTS','totalPoints','total_points','Total','TOTAL','Pts','PTS']) || 0) || 0
+    };
+  }
+
+  function extractRows(payload) {
+    if (Array.isArray(payload)) return payload;
+    if (!payload || typeof payload !== 'object') return [];
+    const aliases = MVP_SEASON === '11'
+      ? ['mvpsS11','season11','seasonS11','MVP Season 11','data']
+      : ['mvpsSX','seasonX','mvpsS10','season10','mvpsS9','mvpS9','mvps9','mvp9','Season X','data'];
+    return pick(payload, aliases) || [];
+  }
+
+  function pillHTML(value) {
+    const text = clean(value);
+    if (!text) return '<span class="zpill znil">—</span>';
+    return text.split(',').map(chunk => {
+      const match = chunk.trim().match(/^(\d+)\s*x\s*(.*)$/i);
+      const qty = match ? match[1] : '1';
+      const role = match ? match[2].trim() : chunk.trim();
+      const lower = role.toLowerCase();
+      let cls = 'zpill';
+      if (lower.includes('setter')) cls += ' zps';
+      else if (lower.includes('spiker')) cls += ' zpk';
+      else if (lower.includes('potw')) cls += ' zpotw';
+      else cls += ' zpt';
+      return `<span class="${cls}"><b>${esc(qty)}x</b> ${esc(role)}</span>`;
+    }).join('');
+  }
+
+  function rankHex(rank) {
+    const n = String(rank), fs = n.length <= 2 ? 20 : n.length <= 3 ? 15 : 11;
+    return `<div class="zrhex"><svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><polygon points="30,3.5 56.5,17.75 56.5,42.25 30,56.5 3.5,42.25 3.5,17.75" fill="rgba(217,154,36,.13)" stroke="rgba(245,195,84,.68)" stroke-width="2.2"/><text x="30" y="30" text-anchor="middle" dy=".36em" font-family="Space Mono,monospace" font-size="${fs}" font-weight="800" fill="#f5d17a">#${n}</text></svg></div>`;
+  }
+
+  function setStatus(text, error=false) {
+    const el = $('zsync');
+    el.innerHTML = `<div class="zbdot"></div><span>${esc(text)}</span>`;
+    el.className = 'zbadge' + (error ? ' zerr' : '');
+  }
+
+  function render() {
+    const query = $('zsearch').value.toLowerCase().trim();
+    const rows = [...MVP_ROWS].filter(p => !query || Object.values(p).join(' ').toLowerCase().includes(query))
+      .sort((a,b) => b.points-a.points || a.name.localeCompare(b.name));
+    const head = `<div class="zrow zmvp zrh"><span>Rank</span><span>Player</span><span>TOP 1</span><span>TOP 2</span><span>TOP 3</span><span>TOP 4</span><span>TOP 5</span><span>POTW</span><span>Points</span></div>`;
+    if (!MVP_ROWS.length) {
+      $('mvpTable').innerHTML = '<div class="zempty">No player data found for this season yet.</div>';
+      return;
+    }
+    if (!rows.length) {
+      $('mvpTable').innerHTML = head + '<div class="zempty">No players match your search.</div>';
+      return;
+    }
+    $('mvpTable').innerHTML = head + rows.map((p,i) => `
+      <div class="zrow zmvp">
+        <span class="zrrank">${rankHex(i+1)}</span>
+        <span class="zrplayer"><b>${esc(p.name)}</b>${p.team ? `<span class="zrteam">${esc(p.team)}</span>` : ''}</span>
+        <span class="zrcell">${pillHTML(p.top1)}</span>
+        <span class="zrcell">${pillHTML(p.top2)}</span>
+        <span class="zrcell">${pillHTML(p.top3)}</span>
+        <span class="zrcell">${pillHTML(p.top4)}</span>
+        <span class="zrcell">${pillHTML(p.top5)}</span>
+        <span class="zrcell">${pillHTML(p.potw)}</span>
+        <span class="zrtotal">${p.points}</span>
+      </div>`).join('');
+  }
+
+  let MVP_ROWS = [];
+  async function syncMVP() {
+    if (!MVP_API_URL || MVP_API_URL.includes('PASTE_')) {
+      setStatus('API NOT SET', true);
+      $('mvpTable').innerHTML = '<div class="zempty">Paste the deployed Apps Script Web App URL into MVP_API_URL.</div>';
+      return;
+    }
+    setStatus('SYNCING');
+    try {
+      const response = await fetch(MVP_API_URL, {method:'GET',cache:'no-store',redirect:'follow'});
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const payload = await response.json();
+      MVP_ROWS = extractRows(payload).map(normalizePlayer).filter(p => p.name);
+      $('ztotal').textContent = MVP_ROWS.length;
+      render();
+      setStatus('LIVE · SYNCED');
+    } catch (error) {
+      console.error(`${MVP_SEASON} MVP API error:`, error);
+      setStatus('API ERROR', true);
+      $('mvpTable').innerHTML = '<div class="zempty">Could not load the season data. Check the Apps Script Web App URL and deployment access.</div>';
+    }
+  }
+  $('zsearch').addEventListener('input', render);
+  syncMVP();
+</script>
+</body>
+</html>
